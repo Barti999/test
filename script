@@ -1,0 +1,36 @@
+// Funkcja pobierająca dane o głosowaniach posła
+async function fetchVotes(mpId) {
+    const url = `https://api.sejm.gov.pl/sejm/term9/MP/${mpId}/votes`;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Błąd podczas pobierania danych:", error);
+    }
+}
+
+// Funkcja wyświetlająca głosowania
+async function displayVotes(mpId) {
+    const votes = await fetchVotes(mpId);
+    const votesContainer = document.getElementById('votes');
+
+    if (votes && votes.length > 0) {
+        let html = '<h2>Głosowania posła:</h2>';
+        votes.forEach(vote => {
+            html += `
+                <div class="vote">
+                    <p><strong>Data:</strong> ${vote.date}</p>
+                    <p><strong>Temat:</strong> ${vote.title}</p>
+                    <p><strong>Wynik:</strong> ${vote.vote}</p>
+                </div>
+            `;
+        });
+        votesContainer.innerHTML = html;
+    } else {
+        votesContainer.innerHTML = '<p>Brak danych o głosowaniach.</p>';
+    }
+}
+
+// Przykład: Wyświetl głosowania posła o ID 10 (możesz zmienić ID)
+displayVotes(10);
