@@ -8,6 +8,10 @@
 </head>
 <body>
     <h1>Głosowania posłów</h1>
+    <div id="mpList">
+        <h2>Lista posłów:</h2>
+        <ul id="mpListItems"></ul>
+    </div>
     <div id="votes"></div>
     <script src="script.js"></script>
 </body>

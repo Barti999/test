@@ -1,36 +1,36 @@
-// Funkcja pobierająca dane o głosowaniach posła
-async function fetchVotes(mpId) {
-    const url = `https://api.sejm.gov.pl/sejm/term9/MP/${mpId}/votes`;
+// Funkcja pobierająca listę posłów
+async function fetchMpList() {
+    const url = 'https://api.sejm.gov.pl/sejm/term10/MP';
     try {
         const response = await fetch(url);
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error("Błąd podczas pobierania danych:", error);
+        console.error("Błąd podczas pobierania listy posłów:", error);
     }
 }
 
-// Funkcja wyświetlająca głosowania
-async function displayVotes(mpId) {
-    const votes = await fetchVotes(mpId);
-    const votesContainer = document.getElementById('votes');
+// Funkcja wyświetlająca listę posłów
+async function displayMpList() {
+    const mpList = await fetchMpList();
+    const mpListContainer = document.getElementById('mpListItems');
 
-    if (votes && votes.length > 0) {
-        let html = '<h2>Głosowania posła:</h2>';
-        votes.forEach(vote => {
+    if (mpList && mpList.length > 0) {
+        let html = '';
+        mpList.forEach(mp => {
             html += `
-                <div class="vote">
-                    <p><strong>Data:</strong> ${vote.date}</p>
-                    <p><strong>Temat:</strong> ${vote.title}</p>
-                    <p><strong>Wynik:</strong> ${vote.vote}</p>
-                </div>
+                <li>
+                    <strong>${mp.firstLastName}</strong> (ID: ${mp.id})<br>
+                    Partia: ${mp.club}<br>
+                    <button onclick="displayVotes(${mp.id})">Pokaż głosowania</button>
+                </li>
             `;
         });
-        votesContainer.innerHTML = html;
+        mpListContainer.innerHTML = html;
     } else {
-        votesContainer.innerHTML = '<p>Brak danych o głosowaniach.</p>';
+        mpListContainer.innerHTML = '<li>Brak danych o posłach.</li>';
     }
 }
 
-// Przykład: Wyświetl głosowania posła o ID 10 (możesz zmienić ID)
-displayVotes(10);
+// Wywołaj funkcję wyświetlającą listę posłów po załadowaniu strony
+window.onload = displayMpList;
