@@ -1,89 +1,96 @@
-// Dane testowe (zamiast API Sejmu)
-const sessionsData = [
-    { id: 1, number: 1, date: '2023-01-01' },
-    { id: 2, number: 2, date: '2023-01-15' },
-    { id: 3, number: 3, date: '2023-02-01' }
-];
+const apiBase = "https://api.sejm.gov.pl/sejm/term10";
 
-const votesData = {
-    1: [
-        { name: "Jan Kowalski", vote: "Za" },
-        { name: "Anna Nowak", vote: "Przeciw" },
-        { name: "Tomasz Wiśniewski", vote: "Wstrzymał się" }
-    ],
-    2: [
-        { name: "Paweł Malinowski", vote: "Za" },
-        { name: "Marek Kaczmarek", vote: "Przeciw" }
-    ],
-    3: [
-        { name: "Katarzyna Zawisza", vote: "Za" },
-        { name: "Piotr Nowak", vote: "Wstrzymał się" }
-    ]
-};
+// Pobieranie listy posiedzeń
+async function getSessions() {
+  try {
+    const response = await fetch(`${apiBase}/sittings`);
+    if (!response.ok) throw new Error("Błąd podczas pobierania danych posiedzeń.");
+    
+    const sessions = await response.json();
+    populateSessions(sessions);
+  } catch (error) {
+    console.error("Błąd podczas pobierania posiedzeń:", error);
+  }
+}
 
-document.addEventListener("DOMContentLoaded", function() {
-    const sessionSelect = document.getElementById("sessionSelect");
-    const voteSelect = document.getElementById("voteSelect");
-    const resultsTable = document.getElementById("resultsTable").getElementsByTagName('tbody')[0];
+// Wypełnienie listy posiedzeń w menu
+function populateSessions(sessions) {
+  const sessionSelect = document.getElementById("sessions");
+  sessionSelect.innerHTML = '<option value="">Wybierz posiedzenie</option>';
+  
+  sessions.forEach(session => {
+    const option = document.createElement("option");
+    option.value = session.number;
+    option.textContent = `Posiedzenie nr ${session.number} (${session.startDate})`;
+    sessionSelect.appendChild(option);
+  });
+}
 
-    // Funkcja ładowania posiedzeń do selecta
-    function loadSessions() {
-        sessionsData.forEach(session => {
-            const option = document.createElement('option');
-            option.value = session.id;
-            option.textContent = `Posiedzenie ${session.number} - ${session.date}`;
-            sessionSelect.appendChild(option);
-        });
-    }
+// Pobieranie głosowań dla danego posiedzenia
+async function getVotes(sessionNumber) {
+  try {
+    const response = await fetch(`${apiBase}/sittings/${sessionNumber}/votes`);
+    if (!response.ok) throw new Error("Błąd podczas pobierania głosowań.");
+    
+    const votes = await response.json();
+    populateVotes(votes);
+  } catch (error) {
+    console.error("Błąd podczas pobierania głosowań:", error);
+  }
+}
 
-    // Funkcja ładowania głosowań
-    function loadVotes(sessionId) {
-        voteSelect.innerHTML = `<option value="">Wybierz głosowanie</option>`;
-        if (!votesData[sessionId]) return;
+// Wypełnienie listy głosowań
+function populateVotes(votes) {
+  const votesList = document.getElementById("votes");
+  votesList.innerHTML = "";
 
-        votesData[sessionId].forEach((vote, index) => {
-            const option = document.createElement('option');
-            option.value = index;
-            option.textContent = `Głosowanie ${index + 1}`;
-            voteSelect.appendChild(option);
-        });
+  if (votes.length === 0) {
+    votesList.innerHTML = "<li>Brak głosowań dla tego posiedzenia.</li>";
+    return;
+  }
 
-        voteSelect.disabled = false;
-    }
+  votes.forEach(vote => {
+    const li = document.createElement("li");
+    li.textContent = `Głosowanie nr ${vote.number} (${vote.title})`;
+    li.addEventListener("click", () => getVoteDetails(vote.number));
+    votesList.appendChild(li);
+  });
+}
 
-    // Funkcja wyświetlania wyników głosowania
-    function displayVoteResults(sessionId, voteIndex) {
-        resultsTable.innerHTML = '';
+// Pobieranie szczegółów głosowania
+async function getVoteDetails(voteNumber) {
+  try {
+    const response = await fetch(`${apiBase}/votes/${voteNumber}`);
+    if (!response.ok) throw new Error("Błąd podczas pobierania szczegółów głosowania.");
+    
+    const voteDetails = await response.json();
+    displayVoteDetails(voteDetails);
+  } catch (error) {
+    console.error("Błąd podczas pobierania szczegółów głosowania:", error);
+  }
+}
 
-        if (!votesData[sessionId] || !votesData[sessionId][voteIndex]) return;
+// Wyświetlanie szczegółów głosowania
+function displayVoteDetails(voteDetails) {
+  const voteDetailsDiv = document.getElementById("vote-details");
+  voteDetailsDiv.innerHTML = `
+    <h3>Szczegóły głosowania nr ${voteDetails.number}</h3>
+    <p><strong>Tytuł:</strong> ${voteDetails.title}</p>
+    <p><strong>Data:</strong> ${voteDetails.date}</p>
+    <h4>Wyniki:</h4>
+    <ul>
+      ${voteDetails.results.map(result => `<li>${result.name}: ${result.vote}</li>`).join("")}
+    </ul>
+  `;
+}
 
-        votesData[sessionId][voteIndex].forEach(result => {
-            const row = resultsTable.insertRow();
-            const nameCell = row.insertCell(0);
-            const voteCell = row.insertCell(1);
-            nameCell.textContent = result.name;
-            voteCell.textContent = result.vote;
-        });
-    }
-
-    // Ładowanie posiedzeń
-    loadSessions();
-
-    // Obsługa zmiany posiedzenia
-    sessionSelect.addEventListener('change', function() {
-        const sessionId = parseInt(sessionSelect.value);
-        if (sessionId) {
-            loadVotes(sessionId);
-        } else {
-            voteSelect.disabled = true;
-            resultsTable.innerHTML = '';
-        }
-    });
-
-    // Obsługa zmiany głosowania
-    voteSelect.addEventListener('change', function() {
-        const sessionId = parseInt(sessionSelect.value);
-        const voteIndex = parseInt(voteSelect.value);
-        displayVoteResults(sessionId, voteIndex);
-    });
+document.getElementById("sessions").addEventListener("change", event => {
+  const sessionNumber = event.target.value;
+  if (sessionNumber) {
+    getVotes(sessionNumber);
+  } else {
+    document.getElementById("votes").innerHTML = "";
+  }
 });
+
+getSessions();
