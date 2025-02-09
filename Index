@@ -28,7 +28,6 @@
     <section id="mps">
         <h2>Lista Posłów</h2>
         <div id="mps-list">
-            <!-- Tutaj zostaną wyświetleni posłowie -->
             <p>Ładowanie danych...</p>
         </div>
     </section>

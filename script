@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const mpsList = document.getElementById('mps-list'); // Kontener na listę posłów
+    const mpsList = document.getElementById('mps-list');
 
     // Sprawdź, czy kontener istnieje
     if (!mpsList) {
