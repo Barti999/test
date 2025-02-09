@@ -55,3 +55,34 @@ ul {
     display: block;
     margin-bottom: 10px;
 }
+nav {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+button {
+    background-color: #0044cc;
+    color: white;
+    padding: 10px 15px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #003399;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    background: white;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

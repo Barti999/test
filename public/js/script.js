@@ -1,8 +1,27 @@
-import { fetchPoslowie, formatNumber } from "./api.js";
+import { fetchPoslowie, fetchPosiedzenia, formatNumber } from "./api.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     const listaPoslow = document.getElementById("poslowie");
+    const listaPosiedzen = document.getElementById("posiedzenia");
 
+    const sekcjaPoslowie = document.getElementById("sekcja-poslowie");
+    const sekcjaPosiedzenia = document.getElementById("sekcja-posiedzenia");
+
+    const btnPoslowie = document.getElementById("btn-poslowie");
+    const btnPosiedzenia = document.getElementById("btn-posiedzenia");
+
+    // Przełączanie zakładek (posłowie / posiedzenia)
+    btnPoslowie.addEventListener("click", () => {
+        sekcjaPoslowie.style.display = "block";
+        sekcjaPosiedzenia.style.display = "none";
+    });
+
+    btnPosiedzenia.addEventListener("click", () => {
+        sekcjaPoslowie.style.display = "none";
+        sekcjaPosiedzenia.style.display = "block";
+    });
+
+    // Wczytanie listy posłów
     async function loadPoslowie() {
         const poslowie = await fetchPoslowie();
         if (!poslowie) {
@@ -10,58 +29,42 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        listaPoslow.innerHTML = ""; // Czyścimy listę przed dodaniem nowych danych
-
+        listaPoslow.innerHTML = "";
         poslowie.forEach(posel => {
             const li = document.createElement("li");
-            li.classList.add("posel-item");
             li.innerHTML = `
-                <img src="https://api.sejm.gov.pl/sejm/term10/MP/${posel.id}/photo" 
-                     alt="${posel.firstLastName}" class="posel-img">
                 <strong>${posel.firstLastName}</strong> (${posel.club || "Brak informacji"})
             `;
-
-            const detailsDiv = document.createElement("div");
-            detailsDiv.classList.add("szczegoly-posla");
-            detailsDiv.style.display = "none";
-
-            li.addEventListener("click", () => {
-                document.querySelectorAll(".szczegoly-posla").forEach(div => {
-                    if (div !== detailsDiv) div.style.display = "none";
-                });
-
-                if (detailsDiv.style.display === "none") {
-                    detailsDiv.innerHTML = `
-                        <h3>${posel.firstLastName}</h3>
-                        <img src="https://api.sejm.gov.pl/sejm/term10/MP/${posel.id}/photo" 
-                             alt="Zdjęcie posła" class="szczegoly-img">
-                        <h4>Informacje podstawowe:</h4>
-                        <p><strong>Imię:</strong> ${posel.firstName}</p>
-                        <p><strong>Drugie imię:</strong> ${posel.secondName || "Brak informacji"}</p>
-                        <p><strong>Nazwisko:</strong> ${posel.lastName}</p>
-                        <p><strong>Data urodzenia:</strong> ${posel.birthDate || "Brak danych"} (${posel.birthLocation || "Brak informacji"})</p>
-
-                        <h4>Dane polityczne:</h4>
-                        <p><strong>Partia:</strong> ${posel.club || "Brak informacji"}</p>
-                        <p><strong>Okręg wyborczy:</strong> ${posel.districtName} (nr ${posel.districtNum})</p>
-                        <p><strong>Numer legitymacji poselskiej:</strong> ${posel.id}</p>
-                        <p><strong>Status:</strong> ${posel.active ? "Poseł z ważnym mandatem" : "Mandat wygasł"}</p>
-
-                        <h4>Wyniki wyborcze:</h4>
-                        <p><strong>Liczba głosów:</strong> ${formatNumber(posel.numberOfVotes)}</p>
-                    `;
-                    detailsDiv.style.display = "block";
-                } else {
-                    detailsDiv.style.display = "none";
-                }
-            });
-
-            li.appendChild(detailsDiv);
             listaPoslow.appendChild(li);
         });
 
         console.log("✅ Posłowie załadowani!");
     }
 
+    // Wczytanie listy posiedzeń
+    async function loadPosiedzenia() {
+        const posiedzenia = await fetchPosiedzenia();
+        if (!posiedzenia) {
+            listaPosiedzen.innerHTML = "<p>Nie udało się załadować listy posiedzeń.</p>";
+            return;
+        }
+
+        listaPosiedzen.innerHTML = "";
+        posiedzenia.forEach(posiedzenie => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+                <strong>${posiedzenie.title}</strong> (Nr: ${posiedzenie.number})
+                <ul>
+                    ${posiedzenie.dates.map(date => `<li>${date}</li>`).join("")}
+                </ul>
+            `;
+            listaPosiedzen.appendChild(li);
+        });
+
+        console.log("✅ Posiedzenia załadowane!");
+    }
+
+    // Załaduj dane przy starcie
     loadPoslowie();
+    loadPosiedzenia();
 });
