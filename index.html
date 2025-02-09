@@ -3,29 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strona Sejmu RP</title>
+    <title>System Głosowań Sejmu RP</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Witaj na stronie Sejmu RP</h1>
-    </header>
-    
-    <section id="mp-list">
-        <h2>Lista Posłów</h2>
-        <ul id="poslowie"></ul>
-    </section>
+    <div class="container">
+        <h1>System Śledzenia Głosowań Sejmu RP</h1>
+        
+        <div class="filters">
+            <div class="form-group">
+                <label for="proceedings">Wybierz posiedzenie:</label>
+                <select id="proceedings" class="form-control">
+                    <option value="">Ładowanie...</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="votings">Wybierz głosowanie:</label>
+                <select id="votings" class="form-control" disabled>
+                    <option value="">Najpierw wybierz posiedzenie</option>
+                </select>
+            </div>
+        </div>
 
-    <section id="votings">
-        <h2>Głosowania Sejmu</h2>
-        <ul id="lista-glosowan"></ul>
-    </section>
+        <div id="loading" class="loading">Ładowanie danych...</div>
+        
+        <div id="results" class="hidden">
+            <h2>Wyniki głosowania</h2>
+            <div class="table-container">
+                <table id="votes-table">
+                    <thead>
+                        <tr>
+                            <th>Posłowie</th>
+                            <th>Klub/Koło</th>
+                            <th>Głos</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-    <footer>
-        <p>&copy; 2025 Sejm RP</p>
-    </footer>
-
-    <!-- Załaduj skrypt z atrybutem defer, by wykonać go po załadowaniu strony -->
-    <script src="script.js" defer></script>
+    <script src="script.js"></script>
 </body>
 </html>
