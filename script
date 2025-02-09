@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const votesList = document.getElementById('votes-list');
     const mpsList = document.getElementById('mps-list');
 
@@ -10,47 +10,66 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
 
     // Wyświetlanie danych o głosowaniach
-    votes.forEach(vote => {
-        const voteElement = document.createElement('div');
-        voteElement.classList.add('vote-item');
-        voteElement.innerHTML = `
-            <h3>${vote.title}</h3>
-            <p>Data: ${vote.date}</p>
-            <p>Wynik: ${vote.result}</p>
-        `;
-        votesList.appendChild(voteElement);
-    });
+    if (votesList) {
+        votes.forEach(vote => {
+            const voteElement = document.createElement('div');
+            voteElement.classList.add('vote-item');
+            voteElement.innerHTML = `
+                <h3>${vote.title}</h3>
+                <p>Data: ${vote.date}</p>
+                <p>Wynik: ${vote.result}</p>
+            `;
+            votesList.appendChild(voteElement);
+        });
+    } else {
+        console.error('Element #votes-list nie został znaleziony.');
+    }
 
     // Pobieranie i wyświetlanie listy posłów
-    fetch('https://api.sejm.gov.pl/sejm/term10/MP')
-        .then(response => response.json())
-        .then(data => {
-            data.forEach(mp => {
-                const mpElement = document.createElement('div');
-                mpElement.classList.add('mp-item');
-                mpElement.innerHTML = `
-                    <h3>${mp.firstLastName}</h3>
-                    <p>Klub: ${mp.club}</p>
-                    <p>Okręg: ${mp.districtNum}</p>
-                `;
-                mpsList.appendChild(mpElement);
+    if (mpsList) {
+        fetch('https://api.sejm.gov.pl/sejm/term10/MP')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Błąd sieciowy: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Dane z API:', data); // Logowanie danych do konsoli
+                data.forEach(mp => {
+                    const mpElement = document.createElement('div');
+                    mpElement.classList.add('mp-item');
+                    mpElement.innerHTML = `
+                        <h3>${mp.firstLastName || 'Brak danych'}</h3>
+                        <p>Klub: ${mp.club || 'Brak danych'}</p>
+                        <p>Okręg: ${mp.districtNum || 'Brak danych'}</p>
+                    `;
+                    mpsList.appendChild(mpElement);
+                });
+            })
+            .catch(error => {
+                console.error('Błąd podczas pobierania danych posłów:', error);
+                mpsList.innerHTML = `<p class="error">Nie udało się załadować danych posłów. Spróbuj ponownie później.</p>`;
             });
-        })
-        .catch(error => {
-            console.error('Błąd podczas pobierania danych posłów:', error);
-        });
+    } else {
+        console.error('Element #mps-list nie został znaleziony.');
+    }
 
     // Obsługa formularza kontaktowego
     const contactForm = document.getElementById('contact-form');
-    contactForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const message = document.getElementById('message').value;
+    if (contactForm) {
+        contactForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
 
-        // Tutaj można dodać kod do wysłania formularza
-        console.log(`Imię: ${name}, Email: ${email}, Wiadomość: ${message}`);
-        alert('Dziękujemy za wiadomość!');
-        contactForm.reset();
-    });
+            // Tutaj można dodać kod do wysłania formularza
+            console.log(`Imię: ${name}, Email: ${email}, Wiadomość: ${message}`);
+            alert('Dziękujemy za wiadomość!');
+            contactForm.reset();
+        });
+    } else {
+        console.error('Element #contact-form nie został znaleziony.');
+    }
 });
