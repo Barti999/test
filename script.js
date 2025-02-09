@@ -19,8 +19,12 @@ async function loadCurrentTerm() {
         if (!response.ok) throw new Error('Nie udało się pobrać danych o kadencji.');
         const terms = await response.json();
         console.log("Fetched terms:", terms); // Debug
-        if (!terms.length) throw new Error('Brak dostępnych kadencji.');
-        currentTerm = terms[terms.length - 1].number; // Ostatnia kadencja
+
+        // Szukamy bieżącej kadencji (gdzie current: true)
+        const current = terms.find(term => term.current === true);
+        if (!current) throw new Error('Nie znaleziono aktualnej kadencji.');
+
+        currentTerm = current.num;
         console.log("Ustalono bieżącą kadencję:", currentTerm);
     } catch (error) {
         showError('Błąd pobierania kadencji: ' + error.message);
