@@ -38,3 +38,18 @@ export async function fetchPosiedzenia() {
         return null;
     }
 }
+const API_URL_VOTINGS = "https://api.sejm.gov.pl/sejm/term10/votings/";
+
+// Funkcja pobierająca głosowania dla danego posiedzenia
+export async function fetchGlosowania(posiedzenieNumber) {
+    try {
+        console.log(`🔄 Pobieranie głosowań dla posiedzenia nr ${posiedzenieNumber}...`);
+        const response = await fetch(`${API_URL_VOTINGS}${posiedzenieNumber}`);
+        if (!response.ok) throw new Error(`Nie udało się pobrać głosowań dla posiedzenia ${posiedzenieNumber}`);
+        
+        return await response.json();
+    } catch (error) {
+        console.error(`❌ Błąd ładowania głosowań: ${error.message}`);
+        return null;
+    }
+}
