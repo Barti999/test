@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,13 +10,29 @@
   <header>
     <h1>Witamy na mojej stronie!</h1>
   </header>
+
   <main>
-    <p>To jest moja pierwsza strona hostowana na GitHub Pages. Cieszę się, że tu jesteś!</p>
-    <button id="clickMeButton">Kliknij mnie!</button>
+    <h2>Wypełnij ankietę</h2>
+    <form id="surveyForm">
+      <div>
+        <label for="question1">Jakie jest Twoje stanowisko w sprawie A?</label>
+        <select id="question1" name="question1">
+          <option value="zgodny">Zgadzam się</option>
+          <option value="niezgodny">Nie zgadzam się</option>
+          <option value="neutralny">Neutralny</option>
+        </select>
+      </div>
+      <!-- Dodaj więcej pytań -->
+      <button type="submit">Oblicz zgodność</button>
+    </form>
+
+    <div id="results"></div>
   </main>
+
   <footer>
     <p>&copy; 2025 Moje Imię</p>
   </footer>
+
   <script src="script.js"></script>
 </body>
 </html>
