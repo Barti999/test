@@ -1,17 +1,17 @@
+<!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Głosowania w Sejmie</title>
+    <title>Lista Posłów - Sejm RP</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>Głosowania w Sejmie</h1>
+        <h1>Lista Posłów - Sejm RP</h1>
         <nav>
             <ul>
                 <li><a href="#about">O stronie</a></li>
-                <li><a href="#votes">Głosowania</a></li>
                 <li><a href="#mps">Posłowie</a></li>
                 <li><a href="#contact">Kontakt</a></li>
             </ul>
@@ -20,20 +20,16 @@
 
     <section id="about">
         <h2>O stronie</h2>
-        <p>Witaj na stronie poświęconej głosowaniom w Sejmie. Znajdziesz tu informacje na temat ostatnich głosowań, wyniki oraz analizy.</p>
-    </section>
-
-    <section id="votes">
-        <h2>Ostatnie głosowania</h2>
-        <div id="votes-list">
-            <!-- Tutaj będą dynamicznie dodawane informacje o głosowaniach -->
-        </div>
+        <p>
+            Witaj na stronie poświęconej posłom Sejmu Rzeczypospolitej Polskiej. Znajdziesz tu aktualną listę posłów wraz z ich podstawowymi informacjami.
+        </p>
     </section>
 
     <section id="mps">
         <h2>Lista Posłów</h2>
         <div id="mps-list">
-            <!-- Tutaj będą dynamicznie dodawani posłowie -->
+            <!-- Tutaj zostaną wyświetleni posłowie -->
+            <p>Ładowanie danych...</p>
         </div>
     </section>
 
@@ -55,7 +51,7 @@
     </section>
 
     <footer>
-        <p>&copy; 2023 Głosowania w Sejmie. Wszelkie prawa zastrzeżone.</p>
+        <p>&copy; 2023 Lista Posłów - Sejm RP. Wszelkie prawa zastrzeżone.</p>
     </footer>
 
     <script src="script.js"></script>
