@@ -1,9 +1,13 @@
 document.addEventListener("DOMContentLoaded", async () => {
+    const API_URL = "https://api.sejm.gov.pl/sejm/term10/MP"; // Adres API Sejmu
     const listaPoslow = document.getElementById("poslowie");
+    const szczegolyPosla = document.getElementById("informacje-posel");
 
+    // Funkcja pobierająca listę posłów bezpośrednio z API
     async function loadPoslowie() {
         try {
-            const response = await fetch("data/poslowie.json"); // Pobieranie lokalnego pliku JSON
+            console.log("🔄 Pobieranie listy posłów...");
+            const response = await fetch(API_URL);
             if (!response.ok) throw new Error("Nie udało się pobrać danych");
 
             const poslowie = await response.json();
@@ -12,32 +16,36 @@ document.addEventListener("DOMContentLoaded", async () => {
             poslowie.forEach(posel => {
                 const li = document.createElement("li");
                 li.innerHTML = `
-                    <img src="${posel.zdjecie}" alt="${posel.pelneNazwisko}" width="50">
-                    <strong>${posel.pelneNazwisko}</strong> (${posel.partia})
+                    <img src="https://api.sejm.gov.pl/sejm/term10/MP/${posel.id}/photo" alt="${posel.firstLastName}" width="50">
+                    <strong>${posel.firstLastName}</strong> (${posel.club})
                 `;
                 li.addEventListener("click", () => pokazSzczegoly(posel));
                 listaPoslow.appendChild(li);
             });
+
+            console.log("✅ Posłowie załadowani!");
         } catch (error) {
-            console.error("Błąd ładowania posłów:", error.message);
+            console.error("❌ Błąd ładowania posłów:", error.message);
+            listaPoslow.innerHTML = "<p>Nie udało się załadować listy posłów.</p>";
         }
     }
 
+    // Funkcja wyświetlająca szczegóły posła po kliknięciu
     function pokazSzczegoly(posel) {
-        const szczegoly = document.getElementById("informacje-posel");
-        szczegoly.innerHTML = `
-            <h3>${posel.pelneNazwisko}</h3>
-            <p><strong>Partia:</strong> ${posel.partia}</p>
-            <p><strong>Okręg:</strong> ${posel.okręg} (nr ${posel.nrOkręgu})</p>
-            <p><strong>Województwo:</strong> ${posel.województwo}</p>
+        szczegolyPosla.innerHTML = `
+            <h3>${posel.firstLastName}</h3>
+            <img src="https://api.sejm.gov.pl/sejm/term10/MP/${posel.id}/photo" alt="Zdjęcie posła" width="100">
+            <p><strong>Partia:</strong> ${posel.club}</p>
+            <p><strong>Okręg:</strong> ${posel.districtName} (nr ${posel.districtNum})</p>
+            <p><strong>Województwo:</strong> ${posel.voivodeship}</p>
             <p><strong>Email:</strong> <a href="mailto:${posel.email}">${posel.email}</a></p>
-            <p><strong>Wykształcenie:</strong> ${posel.wykształcenie}</p>
-            <p><strong>Zawód:</strong> ${posel.zawód}</p>
-            <p><strong>Liczba głosów:</strong> ${posel.liczbaGłosów}</p>
-            <p><strong>Data urodzenia:</strong> ${posel.dataUrodzenia} (${posel.miejsceUrodzenia})</p>
-            <img src="${posel.zdjecie}" alt="Zdjęcie posła" width="100">
+            <p><strong>Wykształcenie:</strong> ${posel.educationLevel}</p>
+            <p><strong>Zawód:</strong> ${posel.profession}</p>
+            <p><strong>Liczba głosów:</strong> ${posel.numberOfVotes}</p>
+            <p><strong>Data urodzenia:</strong> ${posel.birthDate} (${posel.birthLocation})</p>
         `;
     }
 
+    // Załaduj posłów po uruchomieniu strony
     loadPoslowie();
 });

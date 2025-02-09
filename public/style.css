@@ -37,3 +37,14 @@ ul li {
 ul li:hover {
     background: #e0e0e0;
 }
+ul li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+ul li img {
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+}
