@@ -1,27 +1,29 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Arial', sans-serif;
   line-height: 1.6;
   margin: 0;
   padding: 0;
-  background-color: #f5f5f5;
+  background-color: #f9fafb;
   color: #333;
 }
 
 header {
   background-color: #007bff;
   color: white;
-  padding: 1rem;
+  padding: 1.5rem;
   text-align: center;
+  border-bottom: 2px solid #0056b3;
 }
 
 nav button {
   margin: 0.5rem;
-  padding: 0.5rem 1rem;
+  padding: 0.8rem 1.5rem;
   border: none;
   background-color: #0056b3;
   color: white;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 8px;
+  font-size: 1rem;
   transition: background-color 0.3s ease;
 }
 
@@ -30,39 +32,72 @@ nav button:hover {
 }
 
 main {
-  padding: 1rem;
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+section {
+  margin-top: 2rem;
 }
 
 .card {
   background-color: white;
-  margin: 0.5rem 0;
-  padding: 1rem;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 1rem 0;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
   display: grid;
-  grid-template-columns: 100px 1fr;
+  grid-template-columns: 120px 1fr;
   gap: 1rem;
-  align-items: start;
+  align-items: center;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.02);
 }
 
 .mp-photo {
-  max-width: 100px;
-  max-height: 100px;
-  border-radius: 8px;
+  max-width: 120px;
+  max-height: 120px;
+  border-radius: 50%;
   object-fit: cover;
+  border: 3px solid #007bff;
 }
 
 .card-content {
   display: grid;
-  grid-template-columns: 150px 1fr;
-  row-gap: 0.5rem;
+  grid-template-columns: 160px 1fr;
+  row-gap: 0.8rem;
 }
 
 .card-content div {
-  padding: 0.2rem 0;
+  padding: 0.4rem 0;
 }
 
 .card-content div span {
   font-weight: bold;
   color: #555;
+}
+
+.card-content div a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.card-content div a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .card {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+
+  .card-content {
+    grid-template-columns: 1fr;
+  }
 }
