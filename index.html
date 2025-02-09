@@ -3,51 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Głosowań Sejmu RP</title>
+    <title>Głosowania Sejmowe</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="data:;base64,iVBORw0KGgo="> <!-- Pusty favicon -->
 </head>
 <body>
     <div class="container">
-        <h1>System Śledzenia Głosowań Sejmu RP</h1>
+        <h1>Głosowania Sejmowe</h1>
         
-        <div class="filters">
-            <div class="form-group">
-                <label for="proceedings">Wybierz posiedzenie:</label>
-                <select id="proceedings" class="form-control">
-                    <option value="">Ładowanie...</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="votings">Wybierz głosowanie:</label>
-                <select id="votings" class="form-control" disabled>
-                    <option value="">Najpierw wybierz posiedzenie</option>
-                </select>
-            </div>
+        <div class="select-container">
+            <label for="sessionSelect">Wybierz posiedzenie:</label>
+            <select id="sessionSelect">
+                <!-- Opcje posiedzeń będą załadowane dynamicznie -->
+            </select>
         </div>
 
-        <div id="loading" class="loading">Ładowanie danych...</div>
-        
-        <div id="results" class="hidden">
-            <h2>Wyniki głosowania</h2>
-            <div class="table-container">
-                <table id="votes-table">
-                    <thead>
-                        <tr>
-                            <th>Posłowie</th>
-                            <th>Klub/Koło</th>
-                            <th>Głos</th>
-                        </tr>
-                    </thead>
-                    <tbody id="mp-table-body">
-                        <!-- Wiersze będą generowane dynamicznie -->
-                    </tbody>
-                </table>
-            </div>
+        <div class="select-container">
+            <label for="voteSelect">Wybierz głosowanie:</label>
+            <select id="voteSelect">
+                <!-- Opcje głosowań będą załadowane dynamicznie -->
+            </select>
         </div>
 
-        <div id="error-message" class="hidden"></div>
+        <div id="voteResults">
+            <!-- Wyniki głosowania będą wyświetlone tutaj -->
+        </div>
     </div>
 
     <script src="script.js"></script>
