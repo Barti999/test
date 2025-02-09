@@ -39,28 +39,30 @@ main {
   padding: 1rem;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 100px 1fr;
   gap: 1rem;
+  align-items: start;
 }
 
 .mp-photo {
   max-width: 100px;
   max-height: 100px;
   border-radius: 8px;
-  margin-bottom: 10px;
   object-fit: cover;
 }
 
-.card p {
-  margin: 0.2rem 0;
+.card-content {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  row-gap: 0.5rem;
 }
 
-.card a {
-  color: #007bff;
-  text-decoration: none;
+.card-content div {
+  padding: 0.2rem 0;
 }
 
-.card a:hover {
-  text-decoration: underline;
+.card-content div span {
+  font-weight: bold;
+  color: #555;
 }
