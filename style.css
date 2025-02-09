@@ -46,3 +46,13 @@ footer {
 form div {
   margin-bottom: 1em;
 }
+
+/* Opcjonalnie – style dla sekcji z wynikami głosowań */
+.vote {
+  border: 1px solid #ddd;
+  margin: 1em auto;
+  padding: 1em;
+  max-width: 600px;
+  text-align: left;
+  background-color: #fff;
+}
