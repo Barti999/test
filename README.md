@@ -1,1 +1,0 @@
-działa nie działa
