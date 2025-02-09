@@ -1,20 +1,5 @@
 const BASE_URL = "https://api.sejm.gov.pl/sejm/term10/";
 
-// Funkcja do pobierania danych o posłach
-async function fetchDeputies() {
-  const url = `${BASE_URL}deputies`;
-  try {
-    const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
-    if (!response.ok) throw new Error(`Błąd HTTP: ${response.status}`);
-    const data = await response.json();
-    console.log("Dane o posłach:", data);
-    return data;
-  } catch (error) {
-    console.error("Błąd podczas pobierania danych o posłach:", error);
-    return null;
-  }
-}
-
 // Funkcja do pobierania głosowań dla konkretnego posiedzenia
 async function fetchVotingData(term, proceeding) {
   const url = `${BASE_URL}votings/${proceeding}`;
@@ -100,26 +85,6 @@ document.getElementById("proceedingSelect").addEventListener("change", async (ev
   } else {
     document.getElementById("votingResults").innerHTML = "<p>Brak danych do wyświetlenia.</p>";
   }
-});
-
-// Obsługa wysłania formularza ankiety
-document.getElementById("surveyForm").addEventListener("submit", async (event) => {
-  event.preventDefault();
-
-  const userAnswers = [document.getElementById("question1").value];
-  const deputies = await fetchDeputies();
-  if (!deputies) {
-    alert("Nie udało się pobrać danych o posłach.");
-    return;
-  }
-
-  const allVotes = await fetchAllProceedings(10);
-  const compatibilityData = deputies.map(deputy => {
-    const compatibility = Math.random() * 100;
-    return { name: deputy.name, compatibility: compatibility.toFixed(2) };
-  });
-
-  displaySurveyResults(compatibilityData);
 });
 
 // Załaduj posiedzenia i wypełnij dropdown
