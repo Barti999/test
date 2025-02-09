@@ -47,7 +47,7 @@ form div {
   margin-bottom: 1em;
 }
 
-/* Opcjonalnie – style dla sekcji z wynikami głosowań */
+/* Style dla wyników głosowań */
 .vote {
   border: 1px solid #ddd;
   margin: 1em auto;
@@ -55,4 +55,22 @@ form div {
   max-width: 600px;
   text-align: left;
   background-color: #fff;
+}
+
+/* Style dla formularza ankiety */
+form {
+  max-width: 600px;
+  margin: 2em auto;
+  text-align: left;
+}
+
+form div {
+  margin-bottom: 1em;
+}
+
+/* Style dla wyników ankiety */
+#surveyResults {
+  margin-top: 2em;
+  font-size: 1.2rem;
+  color: #4caf50;
 }

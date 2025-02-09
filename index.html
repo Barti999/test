@@ -22,6 +22,27 @@
 
     <!-- Wyniki głosowań wyświetlane po wybraniu posiedzenia -->
     <div id="votingResults"></div>
+
+    <hr>
+
+    <h2>Stwórz swoją ankietę</h2>
+    <form id="surveyForm">
+      <div>
+        <label for="question1">Pytanie 1:</label>
+        <input type="radio" name="question1" value="YES" required> Tak
+        <input type="radio" name="question1" value="NO"> Nie
+      </div>
+
+      <div>
+        <label for="question2">Pytanie 2:</label>
+        <input type="radio" name="question2" value="YES" required> Tak
+        <input type="radio" name="question2" value="NO"> Nie
+      </div>
+
+      <button type="submit">Zakończ</button>
+    </form>
+
+    <div id="surveyResults"></div>
   </main>
 
   <footer>
