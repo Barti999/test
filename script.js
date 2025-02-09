@@ -153,3 +153,16 @@ function showError(message) {
     errorContainer.classList.remove('hidden');
     setTimeout(() => errorContainer.classList.add('hidden'), 5000);
 }
+async function loadCurrentTerm() {
+    try {
+        const response = await fetch(`${API_BASE}/term`);
+        console.log("Response status for term:", response.status);
+        if (!response.ok) throw new Error('Nie udało się pobrać danych o kadencji.');
+        const terms = await response.json();
+        console.log("Fetched terms:", terms); // Debuguj tutaj
+        if (!terms.length) throw new Error('Brak dostępnych kadencji.');
+        currentTerm = terms[terms.length - 1].number;
+    } catch (error) {
+        showError('Błąd pobierania kadencji: ' + error.message);
+    }
+}
