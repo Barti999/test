@@ -28,7 +28,6 @@ async function fetchMPs(term) {
     handleError(response);
     const MPs = await response.json();
     console.log(`Fetched MPs for term ${term}:`, MPs);
-    renderMPs(MPs); // Renderowanie posłów w tabeli
     return MPs;
 }
 
@@ -77,39 +76,35 @@ async function fetchVideos(term, offset = 0, limit = 50) {
     return videos;
 }
 
-// Funkcja do renderowania posłów w tabeli
-function renderMPs(mps) {
-    const tableBody = document.getElementById('mp-table-body');
-    tableBody.innerHTML = ''; // Czyścimy tabelę przed dodaniem nowych danych
+// Funkcja do pobrania listy głosowań na posiedzeniu
+async function fetchVotings(proceeding) {
+    const response = await fetch(`${API_BASE_URL}/term${currentTerm}/votings/${proceeding}`);
+    handleError(response);
+    const votings = await response.json();
+    console.log('Fetched votings:', votings);
+    return votings;
+}
 
-    mps.forEach(mp => {
-        const row = document.createElement('tr');
+// Funkcja do pobrania szczegółów konkretnego głosowania
+async function fetchVotingDetails(proceeding, votingNumber) {
+    const response = await fetch(`${API_BASE_URL}/term${currentTerm}/votings/${proceeding}/${votingNumber}`);
+    handleError(response);
+    const votingDetails = await response.json();
+    console.log('Fetched voting details:', votingDetails);
+    return votingDetails;
+}
 
-        const nameCell = document.createElement('td');
-        nameCell.textContent = `${mp.firstName} ${mp.lastName}`;
-        row.appendChild(nameCell);
-
-        const clubCell = document.createElement('td');
-        clubCell.textContent = mp.club;
-        row.appendChild(clubCell);
-
-        const voteCell = document.createElement('td');
-        voteCell.textContent = mp.vote || 'Brak danych'; // Dodajemy domyślny tekst
-        row.appendChild(voteCell);
-
-        // Dodanie klasy w zależności od głosu
-        if (mp.vote === 'YES') {
-            voteCell.classList.add('vote-yes');
-        } else if (mp.vote === 'NO') {
-            voteCell.classList.add('vote-no');
-        } else if (mp.vote === 'ABSTAIN') {
-            voteCell.classList.add('vote-abstain');
-        } else {
-            voteCell.classList.add('vote-absent');
-        }
-
-        tableBody.appendChild(row);
-    });
+// Funkcja do wyszukiwania głosowań
+async function searchVotings({ proceeding, dateFrom, dateTo, title }) {
+    const url = new URL(`${API_BASE_URL}/term${currentTerm}/votings/search`);
+    const params = { proceeding, dateFrom, dateTo, title };
+    Object.keys(params).forEach(key => params[key] && url.searchParams.append(key, params[key]));
+    
+    const response = await fetch(url);
+    handleError(response);
+    const searchResults = await response.json();
+    console.log('Searched votings:', searchResults);
+    return searchResults;
 }
 
 // Funkcja do ustawienia kadencji i pobrania danych
@@ -123,6 +118,19 @@ async function initialize() {
 
         // Możesz dostosować te funkcje według potrzeb
         const videos = await fetchVideos(term, 0, 50); // Pobranie wideo (offset=0, limit=50)
+        
+        // Przykład pobrania listy głosowań na posiedzeniu
+        const votings = await fetchVotings(4); // 4 to numer posiedzenia
+        console.log('Votings for proceeding 4:', votings);
+        
+        // Przykład pobrania szczegółów głosowania
+        const votingDetails = await fetchVotingDetails(4, 1); // Posiedzenie 4, Głosowanie 1
+        console.log('Voting details:', votingDetails);
+
+        // Przykład wyszukiwania głosowań
+        const searchResults = await searchVotings({ proceeding: 1, dateFrom: '2023-11-01', dateTo: '2023-11-30', title: 'marszałka' });
+        console.log('Search results for voting in November 2023:', searchResults);
+
     } catch (error) {
         console.error('Error during API calls:', error);
     }
