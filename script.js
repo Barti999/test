@@ -15,10 +15,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadCurrentTerm() {
     try {
         const response = await fetch(`${API_BASE}/term`);
+        console.log("Response status for term:", response.status);
         if (!response.ok) throw new Error('Nie udało się pobrać danych o kadencji.');
         const terms = await response.json();
+        console.log("Fetched terms:", terms); // Debug
         if (!terms.length) throw new Error('Brak dostępnych kadencji.');
         currentTerm = terms[terms.length - 1].number; // Ostatnia kadencja
+        console.log("Ustalono bieżącą kadencję:", currentTerm);
     } catch (error) {
         showError('Błąd pobierania kadencji: ' + error.message);
     }
@@ -29,8 +32,10 @@ async function loadProceedings() {
     showLoading(true);
     try {
         const response = await fetch(`${API_BASE}/term/${currentTerm}/proceedings`);
+        console.log("Response status for proceedings:", response.status);
         if (!response.ok) throw new Error('Nie udało się pobrać posiedzeń.');
         const proceedings = await response.json();
+        console.log("Fetched proceedings:", proceedings); // Debug
         populateProceedings(proceedings);
     } catch (error) {
         showError('Błąd pobierania posiedzeń: ' + error.message);
@@ -45,8 +50,10 @@ async function loadMPs() {
     try {
         if (Object.keys(mpsData).length) return;
         const response = await fetch(`${API_BASE}/term/${currentTerm}/MP`);
+        console.log("Response status for MPs:", response.status);
         if (!response.ok) throw new Error('Nie udało się pobrać listy posłów.');
         const mps = await response.json();
+        console.log("Fetched MPs:", mps); // Debug
         mpsData = mps.reduce((acc, mp) => {
             acc[mp.id] = mp;
             return acc;
@@ -66,8 +73,10 @@ document.getElementById('proceedings').addEventListener('change', async function
     showLoading(true);
     try {
         const response = await fetch(`${API_BASE}/term/${currentTerm}/votings/${proceedingNum}`);
+        console.log("Response status for votings:", response.status);
         if (!response.ok) throw new Error('Nie udało się pobrać głosowań.');
         const votings = await response.json();
+        console.log("Fetched votings:", votings); // Debug
         populateVotings(votings);
         document.getElementById('votings').disabled = false;
     } catch (error) {
@@ -85,8 +94,10 @@ document.getElementById('votings').addEventListener('change', async function (e)
     showLoading(true);
     try {
         const response = await fetch(`${API_BASE}/term/${currentTerm}/votings/${proceedingNum}/${votingNum}`);
+        console.log("Response status for voting results:", response.status);
         if (!response.ok) throw new Error('Nie udało się pobrać wyników głosowania.');
         const votingDetails = await response.json();
+        console.log("Fetched voting details:", votingDetails); // Debug
         displayVotingResults(votingDetails);
     } catch (error) {
         showError('Błąd pobierania wyników głosowania: ' + error.message);
@@ -98,6 +109,10 @@ document.getElementById('votings').addEventListener('change', async function (e)
 // Funkcje pomocnicze
 function populateProceedings(proceedings) {
     const select = document.getElementById('proceedings');
+    if (proceedings.length === 0) {
+        select.innerHTML = '<option value="">Brak dostępnych posiedzeń</option>';
+        return;
+    }
     select.innerHTML = proceedings
         .map(p => `<option value="${p.number}">Posiedzenie nr ${p.number}</option>`)
         .join('');
@@ -152,17 +167,4 @@ function showError(message) {
     errorContainer.textContent = message;
     errorContainer.classList.remove('hidden');
     setTimeout(() => errorContainer.classList.add('hidden'), 5000);
-}
-async function loadCurrentTerm() {
-    try {
-        const response = await fetch(`${API_BASE}/term`);
-        console.log("Response status for term:", response.status);
-        if (!response.ok) throw new Error('Nie udało się pobrać danych o kadencji.');
-        const terms = await response.json();
-        console.log("Fetched terms:", terms); // Debuguj tutaj
-        if (!terms.length) throw new Error('Brak dostępnych kadencji.');
-        currentTerm = terms[terms.length - 1].number;
-    } catch (error) {
-        showError('Błąd pobierania kadencji: ' + error.message);
-    }
 }
