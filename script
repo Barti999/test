@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const votesList = document.getElementById('votes-list');
+    const mpsList = document.getElementById('mps-list');
 
     // Przykładowe dane o głosowaniach
     const votes = [
@@ -19,6 +20,25 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         votesList.appendChild(voteElement);
     });
+
+    // Pobieranie i wyświetlanie listy posłów
+    fetch('https://api.sejm.gov.pl/sejm/term10/MP')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(mp => {
+                const mpElement = document.createElement('div');
+                mpElement.classList.add('mp-item');
+                mpElement.innerHTML = `
+                    <h3>${mp.firstLastName}</h3>
+                    <p>Klub: ${mp.club}</p>
+                    <p>Okręg: ${mp.districtNum}</p>
+                `;
+                mpsList.appendChild(mpElement);
+            });
+        })
+        .catch(error => {
+            console.error('Błąd podczas pobierania danych posłów:', error);
+        });
 
     // Obsługa formularza kontaktowego
     const contactForm = document.getElementById('contact-form');

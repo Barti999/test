@@ -13,6 +13,7 @@
             <ul>
                 <li><a href="#about">O stronie</a></li>
                 <li><a href="#votes">Głosowania</a></li>
+                <li><a href="#mps">Posłowie</a></li>
                 <li><a href="#contact">Kontakt</a></li>
             </ul>
         </nav>
@@ -27,6 +28,13 @@
         <h2>Ostatnie głosowania</h2>
         <div id="votes-list">
             <!-- Tutaj będą dynamicznie dodawane informacje o głosowaniach -->
+        </div>
+    </section>
+
+    <section id="mps">
+        <h2>Lista Posłów</h2>
+        <div id="mps-list">
+            <!-- Tutaj będą dynamicznie dodawani posłowie -->
         </div>
     </section>
 
