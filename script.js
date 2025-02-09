@@ -31,6 +31,7 @@ async function fetchVotings(proceedingNumber) {
     titleG: vote.title,
     topic: vote.topic,
     votingNumber: vote.votingNumber,
+    date: vote.date,
   }));
 }
 
@@ -54,28 +55,60 @@ async function loadData() {
 
   const tableBody = document.querySelector('#votesTable tbody');
 
+  // Iterujemy po posiedzeniach
   for (let proceeding of proceedings) {
     const votings = await fetchVotings(proceeding.number);
     
     for (let vote of votings) {
+      // Generujemy wiersz głosowania
+      const row1 = document.createElement('tr');
+      row1.innerHTML = `
+        <td colspan="10">${vote.titleG}</td>
+      `;
+      tableBody.appendChild(row1);
+
+      // Dodajemy datę głosowania
+      const row2 = document.createElement('tr');
+      row2.innerHTML = `
+        <td colspan="10">${vote.date}</td>
+      `;
+      tableBody.appendChild(row2);
+
+      // Dodajemy opis głosowania
+      const row3 = document.createElement('tr');
+      row3.innerHTML = `
+        <td colspan="10">${vote.description}</td>
+      `;
+      tableBody.appendChild(row3);
+
+      // Dodajemy typ głosowania
+      const row4 = document.createElement('tr');
+      row4.innerHTML = `
+        <td colspan="10">${vote.kind}</td>
+      `;
+      tableBody.appendChild(row4);
+
+      // Dodajemy temat głosowania
+      const row5 = document.createElement('tr');
+      row5.innerHTML = `
+        <td colspan="10">${vote.topic}</td>
+      `;
+      tableBody.appendChild(row5);
+
+      // Dla każdego posła dodajemy wiersz z jego głosowaniem
       for (let mp of MPs) {
         const mpVotes = await fetchMPVotes(mp.id, proceeding.number, proceeding.dates[0]); // Zakładając, że korzystamy z pierwszej daty posiedzenia
         for (let mpVote of mpVotes) {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${vote.titleG}</td>
-            <td>${proceeding.dates.join(", ")}</td>
-            <td>${vote.description}</td>
-            <td>${vote.kind}</td>
-            <td>${vote.titleG}</td>
-            <td>${vote.topic}</td>
+          const row6 = document.createElement('tr');
+          row6.innerHTML = `
             <td>${mp.club}</td>
             <td>${mp.firstName}</td>
             <td>${mp.lastName}</td>
             <td>${mp.id}</td>
             <td>${mpVote.vote || mpVote.listVotes}</td>
+            <td colspan="5"></td> <!-- Pozostawiamy puste kolumny dla pozostałych danych -->
           `;
-          tableBody.appendChild(row);
+          tableBody.appendChild(row6);
         }
       }
     }
