@@ -37,14 +37,22 @@ document.addEventListener("DOMContentLoaded", async () => {
                             <h3>${posel.firstLastName}</h3>
                             <img src="https://api.sejm.gov.pl/sejm/term10/MP/${posel.id}/photo" 
                                  alt="Zdjęcie posła" class="szczegoly-img">
+                            <p><strong>Id:</strong> ${posel.id}</p>
+                            <p><strong>Imię:</strong> ${posel.firstName}</p>
+                            <p><strong>Drugie imię:</strong> ${posel.secondName || "Brak informacji"}</p>
+                            <p><strong>Nazwisko:</strong> ${posel.lastName}</p>
+                            <p><strong>Odmiana (dopełniacz):</strong> ${posel.genitiveName}</p>
+                            <p><strong>Odmiana (biernik):</strong> ${posel.accusativeName}</p>
+                            <p><strong>Aktywny:</strong> ${posel.active ? "Tak" : "Nie"}</p>
                             <p><strong>Partia:</strong> ${posel.club || "Brak informacji"}</p>
-                            <p><strong>Okręg:</strong> ${posel.districtName || "Brak informacji"} (nr ${posel.districtNum || "?"})</p>
-                            <p><strong>Województwo:</strong> ${posel.voivodeship || "Brak informacji"}</p>
+                            <p><strong>Okręg wyborczy:</strong> ${posel.districtName} (nr ${posel.districtNum})</p>
+                            <p><strong>Województwo:</strong> ${posel.voivodeship}</p>
                             <p><strong>Email:</strong> <a href="mailto:${posel.email}">${posel.email || "Brak adresu"}</a></p>
                             <p><strong>Wykształcenie:</strong> ${posel.educationLevel || "Brak informacji"}</p>
                             <p><strong>Zawód:</strong> ${posel.profession || "Brak informacji"}</p>
                             <p><strong>Liczba głosów:</strong> ${posel.numberOfVotes || "Brak danych"}</p>
-                            <p><strong>Data urodzenia:</strong> ${posel.birthDate || "Brak danych"} (${posel.birthLocation || "Brak informacji"})</p>
+                            <p><strong>Data urodzenia:</strong> ${posel.birthDate || "Brak danych"}</p>
+                            <p><strong>Miejsce urodzenia:</strong> ${posel.birthLocation || "Brak informacji"}</p>
                         `;
                         detailsDiv.style.display = "block";
                     } else {
