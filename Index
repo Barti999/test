@@ -1,58 +1,22 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista Posłów - Sejm RP</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moja Strona na GitHub Pages</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Lista Posłów - Sejm RP</h1>
-        <nav>
-            <ul>
-                <li><a href="#about">O stronie</a></li>
-                <li><a href="#mps">Posłowie</a></li>
-                <li><a href="#contact">Kontakt</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <section id="about">
-        <h2>O stronie</h2>
-        <p>
-            Witaj na stronie poświęconej posłom Sejmu Rzeczypospolitej Polskiej. Znajdziesz tu aktualną listę posłów wraz z ich podstawowymi informacjami.
-        </p>
-    </section>
-
-    <section id="mps">
-        <h2>Lista Posłów</h2>
-        <div id="mps-list">
-            <p>Ładowanie danych...</p>
-        </div>
-    </section>
-
-    <section id="contact">
-        <h2>Kontakt</h2>
-        <p>Masz pytania? Skontaktuj się z nami!</p>
-        <form id="contact-form">
-            <label for="name">Imię:</label>
-            <input type="text" id="name" name="name" required>
-            
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            
-            <label for="message">Wiadomość:</label>
-            <textarea id="message" name="message" required></textarea>
-            
-            <button type="submit">Wyślij</button>
-        </form>
-    </section>
-
-    <footer>
-        <p>&copy; 2023 Lista Posłów - Sejm RP. Wszelkie prawa zastrzeżone.</p>
-    </footer>
-
-    <script src="script.js"></script>
+  <header>
+    <h1>Witamy na mojej stronie!</h1>
+  </header>
+  <main>
+    <p>To jest moja pierwsza strona hostowana na GitHub Pages. Cieszę się, że tu jesteś!</p>
+    <button id="clickMeButton">Kliknij mnie!</button>
+  </main>
+  <footer>
+    <p>&copy; 2025 Moje Imię</p>
+  </footer>
+  <script src="script.js"></script>
 </body>
 </html>
