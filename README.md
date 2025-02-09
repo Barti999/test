@@ -1,1 +1,1 @@
-NIC A NIC
+działa nie działa
