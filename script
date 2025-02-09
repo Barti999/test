@@ -1,56 +1,80 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const mpsList = document.getElementById('mps-list');
+    console.log('[DEBUG] DOM został załadowany. Rozpoczynam inicjalizację.');
 
-    // Sprawdź, czy kontener istnieje
+    // 1. Sprawdź, czy kontener na posłów istnieje
+    const mpsList = document.getElementById('mps-list');
     if (!mpsList) {
-        console.error('Element #mps-list nie został znaleziony.');
+        console.error('[BŁĄD] Element #mps-list nie istnieje w DOM!');
+        alert('Błąd krytyczny: Brak kontenera na posłów. Sprawdź strukturę HTML.');
         return;
     }
+    console.log('[DEBUG] Kontener #mps-list znaleziony.');
 
-    // Endpoint API do pobrania listy posłów
+    // 2. Endpoint API
     const apiUrl = 'https://api.sejm.gov.pl/sejm/term10/MP';
+    console.log(`[DEBUG] Próba pobrania danych z API: ${apiUrl}`);
 
-    // Pobieranie i wyświetlanie listy posłów
+    // 3. Pobierz dane z API
     fetch(apiUrl)
         .then(response => {
+            console.log(`[DEBUG] Otrzymano odpowiedź HTTP: ${response.status} ${response.statusText}`);
+
+            // Sprawdź status odpowiedzi
             if (!response.ok) {
-                throw new Error('Błąd sieciowy: ' + response.statusText);
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
-            console.log('Dane z API:', data); // Logowanie danych do konsoli
+            console.log('[DEBUG] Dane z API zostały pobrane:', data);
 
-            // Sprawdź, czy dane są dostępne
-            if (!data || data.length === 0) {
-                mpsList.innerHTML = `<p class="error">Brak danych o posłach.</p>`;
+            // 4. Sprawdź strukturę danych
+            if (!Array.isArray(data)) {
+                console.error('[BŁĄD] Otrzymano nieprawidłowe dane (oczekiwano tablicy):', data);
+                mpsList.innerHTML = `<p class="error">Błąd: Nieprawidłowy format danych z API.</p>`;
                 return;
             }
 
-            // Wyczyść kontener przed dodaniem nowych danych
-            mpsList.innerHTML = '';
+            // 5. Sprawdź, czy dane nie są puste
+            if (data.length === 0) {
+                console.warn('[DEBUG] Otrzymano pustą tablicę posłów.');
+                mpsList.innerHTML = `<p class="error">Brak posłów w bazie danych.</p>`;
+                return;
+            }
 
-            // Przetwarzanie i wyświetlanie danych
-            data.forEach(mp => {
+            // 6. Wygeneruj HTML dla posłów
+            console.log(`[DEBUG] Przetwarzam ${data.length} posłów...`);
+            mpsList.innerHTML = ''; // Wyczyść kontener
+
+            data.forEach((mp, index) => {
+                // Sprawdź kluczowe pola
+                if (!mp.firstLastName) {
+                    console.warn(`[DEBUG] Brak pola 'firstLastName' dla posła nr ${index}:`, mp);
+                }
+
                 const mpElement = document.createElement('div');
                 mpElement.classList.add('mp-item');
-
-                // Dodaj podstawowe informacje o posłach
                 mpElement.innerHTML = `
                     <h3>${mp.firstLastName || 'Brak danych'}</h3>
-                    <p><strong>Klub/koło:</strong> ${mp.club || 'Brak danych'}</p>
-                    <p><strong>Okręg wyborczy:</strong> ${mp.districtNum || 'Brak danych'} (${mp.districtName || 'Brak danych'})</p>
+                    <p><strong>Klub:</strong> ${mp.club || 'Brak danych'}</p>
+                    <p><strong>Okręg:</strong> ${mp.districtNum || '?'} (${mp.districtName || 'Brak danych'})</p>
                     <p><strong>Email:</strong> ${mp.email || 'Brak danych'}</p>
-                    <p><strong>Data urodzenia:</strong> ${mp.birthDate || 'Brak danych'}</p>
-                    <p><strong>Zawód:</strong> ${mp.profession || 'Brak danych'}</p>
-                    <hr>
                 `;
 
                 mpsList.appendChild(mpElement);
             });
+
+            console.log('[DEBUG] Lista posłów została wygenerowana.');
         })
         .catch(error => {
-            console.error('Błąd podczas pobierania danych posłów:', error);
-            mpsList.innerHTML = `<p class="error">Nie udało się załadować danych posłów. Spróbuj ponownie później.</p>`;
+            // 7. Obsłuż błędy
+            console.error('[BŁĄD] Krytyczny błąd:', error);
+            mpsList.innerHTML = `
+                <p class="error">
+                    Błąd podczas ładowania danych.<br>
+                    Szczegóły: ${error.message}<br>
+                    Sprawdź konsolę przeglądarki (F12).
+                </p>
+            `;
         });
 });
