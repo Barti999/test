@@ -22,7 +22,7 @@ document.getElementById("showMPs").addEventListener("click", async () => {
       html += `<h4>Klub: ${club}</h4>`;
       groupedByClub[club].forEach(mp => {
         html += `<div class="card">
-                    <img src="https://api.sejm.gov.pl/sejm/term10/MP/${mp.id}/photo" alt="Zdjęcie posła ${mp.firstLastName}" class="mp-photo">
+                    <img src="https://api.sejm.gov.pl/sejm/term10/MP/${mp.id}/photo-mini" alt="Zdjęcie posła ${mp.firstLastName}" class="mp-photo">
                     <p><strong>Imię i nazwisko:</strong> ${mp.firstLastName}</p>
                     <p><strong>Numer legitymacji poselskiej:</strong> ${mp.id}</p>
                     <p><strong>Email:</strong> <a href="mailto:${mp.email}">${mp.email}</a></p>
@@ -40,7 +40,7 @@ document.getElementById("showMPs").addEventListener("click", async () => {
     html += "<h3>Nieaktywni</h3>";
     activeFalse.forEach(mp => {
       html += `<div class="card">
-                  <img src="https://api.sejm.gov.pl/sejm/term10/MP/${mp.id}/photo" alt="Zdjęcie posła ${mp.firstLastName}" class="mp-photo">
+                  <img src="https://api.sejm.gov.pl/sejm/term10/MP/${mp.id}/photo-mini" alt="Zdjęcie posła ${mp.firstLastName}" class="mp-photo">
                   <p><strong>Imię i nazwisko:</strong> ${mp.firstLastName}</p>
                   <p><strong>Numer legitymacji poselskiej:</strong> ${mp.id}</p>
                   <p><strong>Email:</strong> <a href="mailto:${mp.email}">${mp.email}</a></p>
