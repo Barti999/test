@@ -15,19 +15,20 @@ async function fetchVotingData(term, proceeding) {
   }
 }
 
-// Funkcja do pobierania danych z wielu posiedzeń
+// Funkcja do pobierania wszystkich dostępnych posiedzeń (nie ograniczamy do 5)
 async function fetchAllProceedings(term) {
-  const maxProceedings = 5; // Ustal limit posiedzeń do pobrania
   let allVotes = [];
+  let proceeding = 1;
 
-  for (let proceeding = 1; proceeding <= maxProceedings; proceeding++) {
+  while (true) {
     console.log(`Pobieram dane dla posiedzenia ${proceeding}...`);
     const data = await fetchVotingData(term, proceeding);
-    if (!data) {
+    if (!data || data.length === 0) {
       console.log(`Brak danych dla posiedzenia ${proceeding}. Zatrzymano pobieranie.`);
-      break;
+      break; // Przerywamy, jeśli nie udało się pobrać danych dla danego posiedzenia
     }
     allVotes.push(data);
+    proceeding++; // Przechodzimy do kolejnego posiedzenia
   }
 
   return allVotes;
@@ -36,10 +37,10 @@ async function fetchAllProceedings(term) {
 // Funkcja do wyświetlania posiedzeń w dropdown
 function populateProceedingDropdown(proceedings) {
   const proceedingSelect = document.getElementById("proceedingSelect");
-  proceedings.forEach((proceeding, index) => {
+  proceedings.forEach((proceedingData, index) => {
     const option = document.createElement("option");
     option.value = index;
-    option.textContent = `Posiedzenie ${index + 1} - ${proceeding.date}`;
+    option.textContent = `Posiedzenie ${index + 1} - ${proceedingData[0].date}`;
     proceedingSelect.appendChild(option);
   });
 }
