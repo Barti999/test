@@ -47,13 +47,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <p><strong>Numer legitymacji poselskiej:</strong> ${posel.id}</p>
                         <p><strong>Status:</strong> ${posel.active ? "Poseł z ważnym mandatem" : "Mandat wygasł"}</p>
 
-                        <h4>Dane kontaktowe:</h4>
-                        <p><strong>Email:</strong> <a href="mailto:${posel.email}">${posel.email || "Brak adresu"}</a></p>
-
-                        <h4>Wykształcenie i kariera:</h4>
-                        <p><strong>Wykształcenie:</strong> ${posel.educationLevel || "Brak informacji"}</p>
-                        <p><strong>Zawód:</strong> ${posel.profession || "Brak informacji"}</p>
-
                         <h4>Wyniki wyborcze:</h4>
                         <p><strong>Liczba głosów:</strong> ${formatNumber(posel.numberOfVotes)}</p>
                     `;
