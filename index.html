@@ -3,31 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Głosowania Sejmowe</title>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Głosowania Sejmu</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Głosowania Sejmowe</h1>
-        
-        <div class="select-container">
-            <label for="sessionSelect">Wybierz posiedzenie:</label>
+    <header>
+        <h1>Głosowania Sejmu RP</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Wybierz posiedzenie</h2>
             <select id="sessionSelect">
-                <!-- Opcje posiedzeń będą załadowane dynamicznie -->
+                <option value="">Wybierz posiedzenie</option>
             </select>
-        </div>
+        </section>
 
-        <div class="select-container">
-            <label for="voteSelect">Wybierz głosowanie:</label>
-            <select id="voteSelect">
-                <!-- Opcje głosowań będą załadowane dynamicznie -->
+        <section>
+            <h2>Wybierz głosowanie</h2>
+            <select id="voteSelect" disabled>
+                <option value="">Wybierz głosowanie</option>
             </select>
-        </div>
+        </section>
 
-        <div id="voteResults">
-            <!-- Wyniki głosowania będą wyświetlone tutaj -->
-        </div>
-    </div>
+        <section>
+            <h2>Wyniki głosowania</h2>
+            <table id="resultsTable" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Imię i nazwisko</th>
+                        <th>Głosowanie</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+    </main>
 
     <script src="script.js"></script>
 </body>

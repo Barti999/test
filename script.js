@@ -1,85 +1,89 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const sessionSelect = document.getElementById('sessionSelect');
-    const voteSelect = document.getElementById('voteSelect');
-    const voteResults = document.getElementById('voteResults');
+// Dane testowe (zamiast API Sejmu)
+const sessionsData = [
+    { id: 1, number: 1, date: '2023-01-01' },
+    { id: 2, number: 2, date: '2023-01-15' },
+    { id: 3, number: 3, date: '2023-02-01' }
+];
 
-    // Funkcja do pobrania listy posiedzeń Sejmu
-    async function getSessions() {
-        try {
-            const response = await fetch('https://api.sejm.gov.pl/sejm/term10/sittings');
-            const data = await response.json();
-            
-            // Wypełnianie selecta z posiedzeniami
-            data.forEach(session => {
-                const option = document.createElement('option');
-                option.value = session.id;
-                option.textContent = `Posiedzenie ${session.number} - ${session.date}`;
-                sessionSelect.appendChild(option);
-            });
+const votesData = {
+    1: [
+        { name: "Jan Kowalski", vote: "Za" },
+        { name: "Anna Nowak", vote: "Przeciw" },
+        { name: "Tomasz Wiśniewski", vote: "Wstrzymał się" }
+    ],
+    2: [
+        { name: "Paweł Malinowski", vote: "Za" },
+        { name: "Marek Kaczmarek", vote: "Przeciw" }
+    ],
+    3: [
+        { name: "Katarzyna Zawisza", vote: "Za" },
+        { name: "Piotr Nowak", vote: "Wstrzymał się" }
+    ]
+};
 
-        } catch (error) {
-            console.error('Błąd podczas pobierania posiedzeń:', error);
-        }
+document.addEventListener("DOMContentLoaded", function() {
+    const sessionSelect = document.getElementById("sessionSelect");
+    const voteSelect = document.getElementById("voteSelect");
+    const resultsTable = document.getElementById("resultsTable").getElementsByTagName('tbody')[0];
+
+    // Funkcja ładowania posiedzeń do selecta
+    function loadSessions() {
+        sessionsData.forEach(session => {
+            const option = document.createElement('option');
+            option.value = session.id;
+            option.textContent = `Posiedzenie ${session.number} - ${session.date}`;
+            sessionSelect.appendChild(option);
+        });
     }
 
-    // Funkcja do pobrania głosowań dla wybranego posiedzenia
-    async function getVotes(sessionId) {
-        try {
-            const response = await fetch(`https://api.sejm.gov.pl/sejm/term10/sittings/${sessionId}/votes`);
-            const data = await response.json();
-            
-            // Wypełnianie selecta z głosowaniami
-            voteSelect.innerHTML = ''; // Czyścimy poprzednie opcje
-            data.forEach(vote => {
-                const option = document.createElement('option');
-                option.value = vote.id;
-                option.textContent = `Głosowanie ${vote.number} - ${vote.title}`;
-                voteSelect.appendChild(option);
-            });
+    // Funkcja ładowania głosowań
+    function loadVotes(sessionId) {
+        voteSelect.innerHTML = `<option value="">Wybierz głosowanie</option>`;
+        if (!votesData[sessionId]) return;
 
-        } catch (error) {
-            console.error('Błąd podczas pobierania głosowań:', error);
-        }
+        votesData[sessionId].forEach((vote, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = `Głosowanie ${index + 1}`;
+            voteSelect.appendChild(option);
+        });
+
+        voteSelect.disabled = false;
     }
 
-    // Funkcja do pobrania wyników głosowania
-    async function getVoteResults(voteId) {
-        try {
-            const response = await fetch(`https://api.sejm.gov.pl/sejm/term10/votes/${voteId}`);
-            const data = await response.json();
+    // Funkcja wyświetlania wyników głosowania
+    function displayVoteResults(sessionId, voteIndex) {
+        resultsTable.innerHTML = '';
 
-            // Wyświetlanie wyników głosowania
-            voteResults.innerHTML = '';
-            data.votes.forEach(vote => {
-                const voteItem = document.createElement('div');
-                voteItem.classList.add('vote-item');
-                voteItem.innerHTML = `
-                    <strong>${vote.name}</strong>: ${vote.vote === 'yes' ? 'Za' : vote.vote === 'no' ? 'Przeciw' : 'Wstrzymał się'}
-                `;
-                voteResults.appendChild(voteItem);
-            });
+        if (!votesData[sessionId] || !votesData[sessionId][voteIndex]) return;
 
-        } catch (error) {
-            console.error('Błąd podczas pobierania wyników głosowania:', error);
-        }
+        votesData[sessionId][voteIndex].forEach(result => {
+            const row = resultsTable.insertRow();
+            const nameCell = row.insertCell(0);
+            const voteCell = row.insertCell(1);
+            nameCell.textContent = result.name;
+            voteCell.textContent = result.vote;
+        });
     }
+
+    // Ładowanie posiedzeń
+    loadSessions();
 
     // Obsługa zmiany posiedzenia
-    sessionSelect.addEventListener('change', function () {
-        const sessionId = sessionSelect.value;
+    sessionSelect.addEventListener('change', function() {
+        const sessionId = parseInt(sessionSelect.value);
         if (sessionId) {
-            getVotes(sessionId);
+            loadVotes(sessionId);
+        } else {
+            voteSelect.disabled = true;
+            resultsTable.innerHTML = '';
         }
     });
 
     // Obsługa zmiany głosowania
-    voteSelect.addEventListener('change', function () {
-        const voteId = voteSelect.value;
-        if (voteId) {
-            getVoteResults(voteId);
-        }
+    voteSelect.addEventListener('change', function() {
+        const sessionId = parseInt(sessionSelect.value);
+        const voteIndex = parseInt(voteSelect.value);
+        displayVoteResults(sessionId, voteIndex);
     });
-
-    // Inicjalizacja: pobranie listy posiedzeń
-    getSessions();
 });
