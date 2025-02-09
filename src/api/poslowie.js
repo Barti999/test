@@ -2,13 +2,23 @@ const fs = require("fs");
 const fetch = require("node-fetch");
 
 const API_URL = "https://api.sejm.gov.pl/sejm/term10/MP";
+const DATA_PATH = "data/poslowie.json";
 
 async function fetchPoslowie() {
     try {
+        console.log("🔄 Pobieranie danych posłów z API Sejmu...");
         const response = await fetch(API_URL);
+
+        if (!response.ok) {
+            throw new Error(`❌ Błąd API: ${response.status} ${response.statusText}`);
+        }
+
         const poslowie = await response.json();
 
-        // Przekształcenie danych do bardziej czytelnego formatu
+        if (!Array.isArray(poslowie) || poslowie.length === 0) {
+            throw new Error("❌ API zwróciło pustą listę posłów.");
+        }
+
         const formattedData = poslowie.map(posel => ({
             id: posel.id,
             imie: posel.firstName,
@@ -29,11 +39,16 @@ async function fetchPoslowie() {
             zdjecie: `https://api.sejm.gov.pl/sejm/term10/MP/${posel.id}/photo`
         }));
 
-        // Zapisz dane do pliku JSON
-        fs.writeFileSync("poslowie.json", JSON.stringify(formattedData, null, 2), "utf-8");
-        console.log("Dane posłów zapisane do pliku poslowie.json");
+        // Sprawdź dane przed zapisaniem
+        console.log("✅ Dane posłów (przed zapisem):", formattedData);
+
+        // Konwersja do JSON i zapis do pliku
+        const jsonData = JSON.stringify(formattedData, null, 2);
+
+        fs.writeFileSync(DATA_PATH, jsonData, "utf-8");
+        console.log("✅ Dane posłów zapisane do:", DATA_PATH);
     } catch (error) {
-        console.error("Błąd podczas pobierania danych posłów:", error);
+        console.error("❌ Błąd podczas pobierania danych posłów:", error.message);
     }
 }
 
