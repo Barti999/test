@@ -1,0 +1,41 @@
+const fs = require("fs");
+const fetch = require("node-fetch");
+
+const API_URL = "https://api.sejm.gov.pl/sejm/term10/MP";
+
+async function fetchPoslowie() {
+    try {
+        const response = await fetch(API_URL);
+        const poslowie = await response.json();
+
+        // Przekształcenie danych do bardziej czytelnego formatu
+        const formattedData = poslowie.map(posel => ({
+            id: posel.id,
+            imie: posel.firstName,
+            drugieImie: posel.secondName || null,
+            nazwisko: posel.lastName,
+            pelneNazwisko: posel.firstLastName,
+            partia: posel.club,
+            okręg: posel.districtName,
+            nrOkręgu: posel.districtNum,
+            województwo: posel.voivodeship,
+            email: posel.email,
+            liczbaGłosów: posel.numberOfVotes,
+            wykształcenie: posel.educationLevel,
+            zawód: posel.profession,
+            aktywny: posel.active,
+            dataUrodzenia: posel.birthDate,
+            miejsceUrodzenia: posel.birthLocation,
+            zdjecie: `https://api.sejm.gov.pl/sejm/term10/MP/${posel.id}/photo`
+        }));
+
+        // Zapisz dane do pliku JSON
+        fs.writeFileSync("poslowie.json", JSON.stringify(formattedData, null, 2), "utf-8");
+        console.log("Dane posłów zapisane do pliku poslowie.json");
+    } catch (error) {
+        console.error("Błąd podczas pobierania danych posłów:", error);
+    }
+}
+
+// Uruchomienie funkcji
+fetchPoslowie();
