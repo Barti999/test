@@ -19,12 +19,8 @@ async function loadCurrentTerm() {
         if (!response.ok) throw new Error('Nie udało się pobrać danych o kadencji.');
         const terms = await response.json();
         console.log("Fetched terms:", terms); // Debug
-
-        // Szukamy bieżącej kadencji (gdzie current: true)
-        const current = terms.find(term => term.current === true);
-        if (!current) throw new Error('Nie znaleziono aktualnej kadencji.');
-
-        currentTerm = current.num;
+        if (!terms.length) throw new Error('Brak dostępnych kadencji.');
+        currentTerm = terms.find(term => term.current).num; // Ostatnia aktywna kadencja
         console.log("Ustalono bieżącą kadencję:", currentTerm);
     } catch (error) {
         showError('Błąd pobierania kadencji: ' + error.message);
@@ -76,7 +72,7 @@ document.getElementById('proceedings').addEventListener('change', async function
 
     showLoading(true);
     try {
-        const response = await fetch(`${API_BASE}/term/${currentTerm}/votings/${proceedingNum}`);
+        const response = await fetch(`${API_BASE}/term/${currentTerm}/proceedings/${proceedingNum}/votings`);
         console.log("Response status for votings:", response.status);
         if (!response.ok) throw new Error('Nie udało się pobrać głosowań.');
         const votings = await response.json();
@@ -97,7 +93,7 @@ document.getElementById('votings').addEventListener('change', async function (e)
 
     showLoading(true);
     try {
-        const response = await fetch(`${API_BASE}/term/${currentTerm}/votings/${proceedingNum}/${votingNum}`);
+        const response = await fetch(`${API_BASE}/term/${currentTerm}/proceedings/${proceedingNum}/votings/${votingNum}`);
         console.log("Response status for voting results:", response.status);
         if (!response.ok) throw new Error('Nie udało się pobrać wyników głosowania.');
         const votingDetails = await response.json();
