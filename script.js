@@ -15,8 +15,9 @@ async function loadCurrentTerm() {
         const response = await fetch(`${API_BASE}/terms`);
         const terms = await response.json();
         currentTerm = terms.find(t => t.current)?.num;
+        if (!currentTerm) throw new Error('Nie znaleziono aktualnej kadencji');
     } catch (error) {
-        showError('Błąd pobierania danych o kadencji');
+        showError('Błąd pobierania danych o kadencji: ' + error.message);
     }
 }
 
@@ -25,10 +26,11 @@ async function loadProceedings() {
     showLoading(true);
     try {
         const response = await fetch(`${API_BASE}/term${currentTerm}/proceedings`);
+        if (!response.ok) throw new Error('Nie udało się pobrać posiedzeń');
         const proceedings = await response.json();
         populateProceedings(proceedings);
     } catch (error) {
-        showError('Błąd pobierania posiedzeń');
+        showError('Błąd pobierania posiedzeń: ' + error.message);
     } finally {
         showLoading(false);
     }
@@ -39,13 +41,14 @@ async function loadMPs() {
     showLoading(true);
     try {
         const response = await fetch(`${API_BASE}/term${currentTerm}/MP`);
+        if (!response.ok) throw new Error('Nie udało się pobrać listy posłów');
         const mps = await response.json();
         mpsData = mps.reduce((acc, mp) => {
             acc[mp.id] = mp;
             return acc;
         }, {});
     } catch (error) {
-        showError('Błąd pobierania listy posłów');
+        showError('Błąd pobierania listy posłów: ' + error.message);
     } finally {
         showLoading(false);
     }
@@ -61,11 +64,12 @@ document.getElementById('proceedings').addEventListener('change', async function
         const response = await fetch(
             `${API_BASE}/term${currentTerm}/votings/${proceedingNum}`
         );
+        if (!response.ok) throw new Error('Nie udało się pobrać głosowań');
         const votings = await response.json();
         populateVotings(votings);
         document.getElementById('votings').disabled = false;
     } catch (error) {
-        showError('Błąd pobierania głosowań');
+        showError('Błąd pobierania głosowań: ' + error.message);
     } finally {
         showLoading(false);
     }
@@ -81,10 +85,11 @@ document.getElementById('votings').addEventListener('change', async function(e) 
         const response = await fetch(
             `${API_BASE}/term${currentTerm}/votings/${proceedingNum}/${votingNum}`
         );
+        if (!response.ok) throw new Error('Nie udało się pobrać wyników głosowania');
         const votingDetails = await response.json();
         displayVotingResults(votingDetails);
     } catch (error) {
-        showError('Błąd pobierania wyników głosowania');
+        showError('Błąd pobierania wyników głosowania: ' + error.message);
     } finally {
         showLoading(false);
     }
