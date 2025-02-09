@@ -3,21 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lista Posłów i Posiedzeń</title>
+  <title>Sejm Głosowania</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Sejm RP</h1>
-    <nav>
-      <button id="showMPs">Lista Posłów</button>
-      <button id="showProceedings">Lista Posiedzeń</button>
-      <button id="showVotes">Głosowania</button>
-    </nav>
-  </header>
-  <main id="content">
-    <p>Wybierz opcję powyżej, aby zobaczyć dane.</p>
-  </main>
+  <div class="container">
+    <h1>Statystyki Głosowań Posłów</h1>
+    <table id="votesTable">
+      <thead>
+        <tr>
+          <th>E1: Title</th>
+          <th>E2: Dates</th>
+          <th>E3: Description</th>
+          <th>E4: Kind</th>
+          <th>E5: TitleG</th>
+          <th>E6: Topic</th>
+          <th>Club</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>ID</th>
+          <th>Vote</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Dane będą ładowane dynamicznie za pomocą JavaScript -->
+      </tbody>
+    </table>
+  </div>
   <script src="script.js"></script>
 </body>
 </html>

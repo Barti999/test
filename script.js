@@ -1,150 +1,86 @@
-const contentDiv = document.getElementById("content");
+// Funkcja do pobierania danych o posłach
+async function fetchMPs() {
+  const response = await fetch('https://api.sejm.gov.pl/sejm/term10/MP');
+  const data = await response.json();
+  return data.map(mp => ({
+    club: mp.club,
+    firstName: mp.firstName,
+    lastName: mp.lastName,
+    id: mp.id,
+  }));
+}
 
-// Funkcja do formatowania liczby z separatorem
-const formatNumber = (num) => num.toLocaleString('pl-PL');
+// Funkcja do pobierania danych o posiedzeniach
+async function fetchProceedings() {
+  const response = await fetch('https://api.sejm.gov.pl/sejm/term10/proceedings');
+  const data = await response.json();
+  return data.filter(item => item.number !== 0).map(proceeding => ({
+    dates: proceeding.dates,
+    number: proceeding.number,
+    title: proceeding.title,
+  }));
+}
 
-// Pobieranie i wyświetlanie listy posłów
-document.getElementById("showMPs").addEventListener("click", async () => {
-  contentDiv.innerHTML = "<p>Ładowanie listy posłów...</p>";
-  try {
-    const response = await fetch("https://api.sejm.gov.pl/sejm/term10/MP");
-    const mps = await response.json();
+// Funkcja do pobierania danych o głosowaniach
+async function fetchVotings(proceedingNumber) {
+  const response = await fetch(`https://api.sejm.gov.pl/sejm/term10/votings/${proceedingNumber}`);
+  const data = await response.json();
+  return data.map(vote => ({
+    description: vote.description,
+    kind: vote.kind,
+    titleG: vote.title,
+    topic: vote.topic,
+    votingNumber: vote.votingNumber,
+  }));
+}
 
-    if (!Array.isArray(mps)) {
-      contentDiv.innerHTML = "<p>Nieprawidłowa struktura danych posłów.</p>";
-      return;
-    }
+// Funkcja do pobierania danych o głosowaniu posła
+async function fetchMPVotes(id, proceedingNumber, date) {
+  const response = await fetch(`https://api.sejm.gov.pl/sejm/term10/MP/${id}/votings/${proceedingNumber}/${date}`);
+  const data = await response.json();
+  return data.map(vote => ({
+    description: vote.description,
+    kind: vote.kind,
+    titleG: vote.title,
+    topic: vote.topic,
+    vote: vote.kind === "ON_LIST" ? vote.listVotes : vote.vote,
+  }));
+}
 
-    const activeTrue = mps.filter(mp => mp.active);
-    const activeFalse = mps.filter(mp => !mp.active);
+// Funkcja do ładowania wszystkich danych i generowania tabeli
+async function loadData() {
+  const MPs = await fetchMPs();
+  const proceedings = await fetchProceedings();
 
-    let html = "<section><h2>Posłowie</h2>";
+  const tableBody = document.querySelector('#votesTable tbody');
 
-    const groupedByClub = activeTrue.reduce((acc, mp) => {
-      acc[mp.club] = acc[mp.club] || [];
-      acc[mp.club].push(mp);
-      return acc;
-    }, {});
-
-    html += "<h3>Aktywni</h3>";
-    for (const club in groupedByClub) {
-      html += `<h4>Klub: ${club}</h4>`;
-      groupedByClub[club].forEach(mp => {
-        html += `<div class="card">
-          <img class="mp-photo" src="https://api.sejm.gov.pl/sejm/term10/MP/${mp.id}/photo-mini" alt="Zdjęcie posła">
-          <div class="card-content">
-            <div><span>Imię i nazwisko:</span> ${mp.firstLastName}</div>
-            <div><span>Klub:</span> ${mp.club}</div>
-            <div><span>Okręg:</span> ${mp.districtName} (${mp.districtNum})</div>
-            <div><span>Data urodzenia:</span> ${mp.birthDate}</div>
-            <div><span>Wykształcenie:</span> ${mp.educationLevel}</div>
-            <div><span>Zawód:</span> ${mp.profession}</div>
-            <div><span>Liczba głosów:</span> ${formatNumber(mp.numberOfVotes)}</div>
-            <div><span>Numer legitymacji:</span> ${mp.id}</div>
-            <div><span>Email:</span> <a href="mailto:${mp.email}">${mp.email}</a></div>
-          </div>
-        </div>`;
-      });
-    }
-
-    html += "<h3>Nieaktywni</h3>";
-    activeFalse.forEach(mp => {
-      html += `<div class="card">
-        <img class="mp-photo" src="https://api.sejm.gov.pl/sejm/term10/MP/${mp.id}/photo-mini" alt="Zdjęcie posła ${mp.firstLastName}">
-        <div class="card-content">
-          <div><span>Imię i nazwisko:</span> ${mp.firstLastName}</div>
-          <div><span>Klub:</span> ${mp.club}</div>
-          <div><span>Okręg:</span> ${mp.districtName} (${mp.districtNum})</div>
-          <div><span>Data urodzenia:</span> ${mp.birthDate}</div>
-          <div><span>Wykształcenie:</span> ${mp.educationLevel}</div>
-          <div><span>Zawód:</span> ${mp.profession}</div>
-          <div><span>Liczba głosów:</span> ${formatNumber(mp.numberOfVotes)}</div>
-          <div><span>Numer legitymacji:</span> ${mp.id}</div>
-          <div><span>Email:</span> <a href="mailto:${mp.email}">${mp.email}</a></div>
-        </div>
-      </div>`;
-    });
-
-    html += "</section>";
-    contentDiv.innerHTML = html;
-  } catch (error) {
-    console.error("Błąd podczas ładowania danych posłów:", error);
-    contentDiv.innerHTML = "<p>Błąd podczas ładowania danych.</p>";
-  }
-});
-
-// Pobieranie i wyświetlanie listy posiedzeń
-document.getElementById("showProceedings").addEventListener("click", async () => {
-  contentDiv.innerHTML = "<p>Ładowanie listy posiedzeń...</p>";
-  try {
-    const response = await fetch("https://api.sejm.gov.pl/sejm/term10/proceedings");
-    const proceedings = await response.json();
-
-    let html = "<section><h2>Posiedzenia</h2>";
-    proceedings.forEach(proceeding => {
-      html += `<div class="card">
-        <p><strong>Posiedzenie:</strong> ${proceeding.title}</p>
-      </div>`;
-    });
-
-    html += "</section>";
-    contentDiv.innerHTML = html;
-  } catch (error) {
-    contentDiv.innerHTML = "<p>Błąd podczas ładowania danych.</p>";
-  }
-});
-
-// Pobieranie i wyświetlanie głosowań na podstawie dat
-document.getElementById("showVotes").addEventListener("click", async () => {
-  contentDiv.innerHTML = "<p>Ładowanie głosowań...</p>";
-  try {
-    // Pobranie posiedzeń
-    const response = await fetch("https://api.sejm.gov.pl/sejm/term10/proceedings");
-    const proceedings = await response.json();
-
-    let html = "<section><h2>Głosowania</h2>";
-
-    // Dla każdego posiedzenia dodajemy linki do głosowań
-    for (const proceeding of proceedings) {
-      const { dates, title } = proceeding;
-
-      html += `<h3>${title}</h3>`;
-      html += `<ul>`;
-      for (const date of dates) {
-        html += `<li><button class="vote-date" data-date="${date}">${date}</button></li>`;
-      }
-      html += `</ul>`;
-    }
-
-    html += "</section>";
-    contentDiv.innerHTML = html;
-
-    // Obsługa kliknięć w przyciski z datami
-    const voteButtons = document.querySelectorAll('.vote-date');
-    voteButtons.forEach(button => {
-      button.addEventListener("click", async (e) => {
-        const date = e.target.dataset.date;
-        contentDiv.innerHTML = `<p>Ładowanie głosowań dla dnia ${date}...</p>`;
-        try {
-          const voteResponse = await fetch(`https://api.sejm.gov.pl/sejm/term10/MP/1/votings/1/${date}`);
-          const votes = await voteResponse.json();
-          
-          let voteHtml = `<h3>Głosowania w dniu: ${date}</h3>`;
-          votes.forEach(vote => {
-            voteHtml += `<div class="card">
-              <p><strong>Tytuł:</strong> ${vote.title}</p>
-              <p><strong>Typ głosowania:</strong> ${vote.type}</p>
-            </div>`;
-          });
-
-          contentDiv.innerHTML = voteHtml;
-        } catch (error) {
-          contentDiv.innerHTML = "<p>Błąd podczas ładowania danych głosowań.</p>";
+  for (let proceeding of proceedings) {
+    const votings = await fetchVotings(proceeding.number);
+    
+    for (let vote of votings) {
+      for (let mp of MPs) {
+        const mpVotes = await fetchMPVotes(mp.id, proceeding.number, proceeding.dates[0]); // Zakładając, że korzystamy z pierwszej daty posiedzenia
+        for (let mpVote of mpVotes) {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${vote.titleG}</td>
+            <td>${proceeding.dates.join(", ")}</td>
+            <td>${vote.description}</td>
+            <td>${vote.kind}</td>
+            <td>${vote.titleG}</td>
+            <td>${vote.topic}</td>
+            <td>${mp.club}</td>
+            <td>${mp.firstName}</td>
+            <td>${mp.lastName}</td>
+            <td>${mp.id}</td>
+            <td>${mpVote.vote || mpVote.listVotes}</td>
+          `;
+          tableBody.appendChild(row);
         }
-      });
-    });
-
-  } catch (error) {
-    contentDiv.innerHTML = "<p>Błąd podczas ładowania danych posiedzeń.</p>";
+      }
+    }
   }
-});
+}
+
+// Wywołanie funkcji po załadowaniu strony
+window.onload = loadData;
