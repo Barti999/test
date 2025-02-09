@@ -24,7 +24,13 @@ document.getElementById("showMPs").addEventListener("click", async () => {
         html += `<div class="card">
                     <p><strong>Imię i nazwisko:</strong> ${mp.firstLastName}</p>
                     <p><strong>Email:</strong> <a href="mailto:${mp.email}">${mp.email}</a></p>
-                    <p><strong>Okręg:</strong> ${mp.districtName}</p>
+                    <p><strong>Data urodzenia:</strong> ${mp.birthDate} (${mp.birthLocation})</p>
+                    <p><strong>Klub:</strong> ${mp.club}</p>
+                    <p><strong>Okręg:</strong> ${mp.districtName} (nr: ${mp.districtNum})</p>
+                    <p><strong>Wykształcenie:</strong> ${mp.educationLevel}</p>
+                    <p><strong>Profesja:</strong> ${mp.profession}</p>
+                    <p><strong>Liczba głosów:</strong> ${mp.numberOfVotes}</p>
+                    <p><strong>Województwo:</strong> ${mp.voivodeship}</p>
                  </div>`;
       });
     }
@@ -34,7 +40,13 @@ document.getElementById("showMPs").addEventListener("click", async () => {
       html += `<div class="card">
                   <p><strong>Imię i nazwisko:</strong> ${mp.firstLastName}</p>
                   <p><strong>Email:</strong> <a href="mailto:${mp.email}">${mp.email}</a></p>
-                  <p><strong>Okręg:</strong> ${mp.districtName}</p>
+                  <p><strong>Data urodzenia:</strong> ${mp.birthDate} (${mp.birthLocation})</p>
+                  <p><strong>Klub:</strong> ${mp.club}</p>
+                  <p><strong>Okręg:</strong> ${mp.districtName} (nr: ${mp.districtNum})</p>
+                  <p><strong>Wykształcenie:</strong> ${mp.educationLevel}</p>
+                  <p><strong>Profesja:</strong> ${mp.profession}</p>
+                  <p><strong>Liczba głosów:</strong> ${mp.numberOfVotes}</p>
+                  <p><strong>Województwo:</strong> ${mp.voivodeship}</p>
                </div>`;
     });
 
