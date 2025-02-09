@@ -1,50 +1,42 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f5f5f5;
-}
-
-header {
-    background-color: #0044cc;
-    color: white;
-    text-align: center;
-    padding: 1em;
-}
-
-main {
-    padding: 20px;
-}
-
-h2 {
-    color: #0044cc;
-}
-
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
+/* Stylizacja listy posłów */
 ul li {
-    background: white;
-    margin: 5px 0;
-    padding: 10px;
-    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 10px;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin: 5px 0;
+    border-radius: 5px;
+    background-color: #fff;
 }
 
 ul li:hover {
-    background: #e0e0e0;
-}
-ul li {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    background-color: #e0e0e0;
 }
 
-ul li img {
-    border-radius: 50%;
-    height: 50px;
-    width: 50px;
+/* Stylizacja zdjęć w liście */
+.posel-img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 0; /* Kwadratowe */
+}
+
+/* Stylizacja szczegółów posła */
+.szczegoly-posla {
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-top: 10px;
+    border-left: 3px solid #0044cc;
+    width: 100%;
+}
+
+/* Stylizacja zdjęcia w szczegółach */
+.szczegoly-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 0; /* Kwadratowe */
 }
