@@ -1,23 +1,45 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lista Posłów i Posiedzeń</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Głosowania Sejmu</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Sejm RP</h1>
-    <nav>
-      <button id="showMPs">Lista Posłów</button>
-      <button id="showProceedings">Lista Posiedzeń</button>
-      <button id="showVotes">Głosowania</button>
-    </nav>
-  </header>
-  <main id="content">
-    <p>Wybierz opcję powyżej, aby zobaczyć dane.</p>
-  </main>
-  <script src="script.js"></script>
+    <header>
+        <h1>Głosowania Sejmu RP</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Wybierz posiedzenie</h2>
+            <select id="sessionSelect">
+                <option value="">Wybierz posiedzenie</option>
+            </select>
+        </section>
+
+        <section>
+            <h2>Wybierz głosowanie</h2>
+            <select id="voteSelect" disabled>
+                <option value="">Wybierz głosowanie</option>
+            </select>
+        </section>
+
+        <section>
+            <h2>Wyniki głosowania</h2>
+            <table id="resultsTable" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Imię i nazwisko</th>
+                        <th>Głosowanie</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
 </body>
 </html>
