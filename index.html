@@ -1,54 +1,30 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Moja Strona na GitHub Pages</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strona Sejmu RP</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Witamy na mojej stronie!</h1>
-  </header>
-
-  <main>
-    <h2>Wyniki głosowań</h2>
+    <header>
+        <h1>Witaj na stronie Sejmu RP</h1>
+    </header>
     
-    <!-- Dropdown z posiedzeniami -->
-    <h3>Wybierz posiedzenie, aby zobaczyć głosowania</h3>
-    <select id="proceedingSelect">
-      <option value="">Wybierz posiedzenie</option>
-    </select>
+    <section id="mp-list">
+        <h2>Lista Posłów</h2>
+        <ul id="poslowie"></ul>
+    </section>
 
-    <!-- Wyniki głosowań wyświetlane po wybraniu posiedzenia -->
-    <div id="votingResults"></div>
+    <section id="votings">
+        <h2>Głosowania Sejmu</h2>
+        <ul id="lista-glosowan"></ul>
+    </section>
 
-    <hr>
+    <footer>
+        <p>&copy; 2025 Sejm RP</p>
+    </footer>
 
-    <h2>Stwórz swoją ankietę</h2>
-    <form id="surveyForm">
-      <div>
-        <label for="question1">Pytanie 1:</label>
-        <input type="radio" name="question1" value="YES" required> Tak
-        <input type="radio" name="question1" value="NO"> Nie
-      </div>
-
-      <div>
-        <label for="question2">Pytanie 2:</label>
-        <input type="radio" name="question2" value="YES" required> Tak
-        <input type="radio" name="question2" value="NO"> Nie
-      </div>
-
-      <button type="submit">Zakończ</button>
-    </form>
-
-    <div id="surveyResults"></div>
-  </main>
-
-  <footer>
-    <p>&copy; 2025 Moje Imię</p>
-  </footer>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
