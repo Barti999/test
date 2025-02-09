@@ -13,11 +13,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadCurrentTerm() {
     try {
         const response = await fetch(`${API_BASE}/terms`);
+        if (!response.ok) throw new Error('Nie udało się pobrać danych o kadencji.');
         const terms = await response.json();
+        if (!terms.length) throw new Error('Brak dostępnych kadencji.');
         currentTerm = terms.find(t => t.current)?.num;
-        if (!currentTerm) throw new Error('Nie znaleziono aktualnej kadencji');
+        if (!currentTerm) throw new Error('Nie znaleziono aktualnej kadencji.');
     } catch (error) {
-        showError('Błąd pobierania danych o kadencji: ' + error.message);
+        showError('Błąd pobierania kadencji: ' + error.message);
     }
 }
 
@@ -25,8 +27,8 @@ async function loadCurrentTerm() {
 async function loadProceedings() {
     showLoading(true);
     try {
-        const response = await fetch(`${API_BASE}/term${currentTerm}/proceedings`);
-        if (!response.ok) throw new Error('Nie udało się pobrać posiedzeń');
+        const response = await fetch(`${API_BASE}/term/${currentTerm}/proceedings`);
+        if (!response.ok) throw new Error('Nie udało się pobrać posiedzeń.');
         const proceedings = await response.json();
         populateProceedings(proceedings);
     } catch (error) {
@@ -36,35 +38,34 @@ async function loadProceedings() {
     }
 }
 
-// Pobierz posłów
+// Pobierz listę posłów
 async function loadMPs() {
     showLoading(true);
     try {
-        const response = await fetch(`${API_BASE}/term${currentTerm}/MP`);
-        if (!response.ok) throw new Error('Nie udało się pobrać listy posłów');
+        if (Object.keys(mpsData).length) return; // Optymalizacja: jeśli już załadowano, pomijamy
+        const response = await fetch(`${API_BASE}/term/${currentTerm}/MP`);
+        if (!response.ok) throw new Error('Nie udało się pobrać listy posłów.');
         const mps = await response.json();
         mpsData = mps.reduce((acc, mp) => {
             acc[mp.id] = mp;
             return acc;
         }, {});
     } catch (error) {
-        showError('Błąd pobierania listy posłów: ' + error.message);
+        showError('Błąd pobierania posłów: ' + error.message);
     } finally {
         showLoading(false);
     }
 }
 
 // Obsługa wyboru posiedzenia
-document.getElementById('proceedings').addEventListener('change', async function(e) {
+document.getElementById('proceedings').addEventListener('change', async function (e) {
     const proceedingNum = e.target.value;
     if (!proceedingNum) return;
 
     showLoading(true);
     try {
-        const response = await fetch(
-            `${API_BASE}/term${currentTerm}/votings/${proceedingNum}`
-        );
-        if (!response.ok) throw new Error('Nie udało się pobrać głosowań');
+        const response = await fetch(`${API_BASE}/term/${currentTerm}/votings/${proceedingNum}`);
+        if (!response.ok) throw new Error('Nie udało się pobrać głosowań.');
         const votings = await response.json();
         populateVotings(votings);
         document.getElementById('votings').disabled = false;
@@ -76,16 +77,14 @@ document.getElementById('proceedings').addEventListener('change', async function
 });
 
 // Obsługa wyboru głosowania
-document.getElementById('votings').addEventListener('change', async function(e) {
+document.getElementById('votings').addEventListener('change', async function (e) {
     const [proceedingNum, votingNum] = e.target.value.split('-');
     if (!proceedingNum || !votingNum) return;
 
     showLoading(true);
     try {
-        const response = await fetch(
-            `${API_BASE}/term${currentTerm}/votings/${proceedingNum}/${votingNum}`
-        );
-        if (!response.ok) throw new Error('Nie udało się pobrać wyników głosowania');
+        const response = await fetch(`${API_BASE}/term/${currentTerm}/votings/${proceedingNum}/${votingNum}`);
+        if (!response.ok) throw new Error('Nie udało się pobrać wyników głosowania.');
         const votingDetails = await response.json();
         displayVotingResults(votingDetails);
     } catch (error) {
@@ -105,6 +104,11 @@ function populateProceedings(proceedings) {
 
 function populateVotings(votings) {
     const select = document.getElementById('votings');
+    if (votings.length === 0) {
+        select.innerHTML = '<option value="">Brak dostępnych głosowań</option>';
+        select.disabled = true;
+        return;
+    }
     select.innerHTML = votings
         .map(v => `<option value="${v.proceeding}-${v.votingNumber}">${v.title}</option>`)
         .join('');
@@ -115,7 +119,7 @@ function displayVotingResults(voting) {
     tbody.innerHTML = '';
 
     voting.votes.forEach(vote => {
-        const mp = mpsData[vote.MP];
+        const mp = mpsData[vote.MP] || { lastFirstName: 'Nieznany poseł', club: 'Brak danych' };
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${mp.lastFirstName}</td>
@@ -143,5 +147,8 @@ function showLoading(show) {
 }
 
 function showError(message) {
-    alert(message);
+    const errorContainer = document.getElementById('error-message');
+    errorContainer.textContent = message;
+    errorContainer.classList.remove('hidden');
+    setTimeout(() => errorContainer.classList.add('hidden'), 5000); // Ukrycie po 5 sekundach
 }
