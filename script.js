@@ -1,96 +1,64 @@
-const apiBase = "https://api.sejm.gov.pl/sejm/term10";
+const contentDiv = document.getElementById("content");
 
-// Pobieranie listy posiedzeń
-async function getSessions() {
+document.getElementById("showMPs").addEventListener("click", async () => {
+  contentDiv.innerHTML = "<p>Ładowanie listy posłów...</p>";
   try {
-    const response = await fetch(`${apiBase}/sittings`);
-    if (!response.ok) throw new Error("Błąd podczas pobierania danych posiedzeń.");
-    
-    const sessions = await response.json();
-    populateSessions(sessions);
+    const response = await fetch("https://api.sejm.gov.pl/sejm/term10/MP");
+    const mps = await response.json();
+
+    const activeTrue = mps.filter(mp => mp.active);
+    const activeFalse = mps.filter(mp => !mp.active);
+
+    let html = "<h2>Posłowie</h2>";
+
+    const groupedByClub = activeTrue.reduce((acc, mp) => {
+      acc[mp.club] = acc[mp.club] || [];
+      acc[mp.club].push(mp);
+      return acc;
+    }, {});
+
+    html += "<h3>Aktywni</h3>";
+    for (const club in groupedByClub) {
+      html += `<h4>Klub: ${club}</h4>`;
+      groupedByClub[club].forEach(mp => {
+        html += `<div class="card">
+                    <p><strong>Imię i nazwisko:</strong> ${mp.firstLastName}</p>
+                    <p><strong>Email:</strong> <a href="mailto:${mp.email}">${mp.email}</a></p>
+                    <p><strong>Okręg:</strong> ${mp.districtName}</p>
+                 </div>`;
+      });
+    }
+
+    html += "<h3>Nieaktywni</h3>";
+    activeFalse.forEach(mp => {
+      html += `<div class="card">
+                  <p><strong>Imię i nazwisko:</strong> ${mp.firstLastName}</p>
+                  <p><strong>Email:</strong> <a href="mailto:${mp.email}">${mp.email}</a></p>
+                  <p><strong>Okręg:</strong> ${mp.districtName}</p>
+               </div>`;
+    });
+
+    contentDiv.innerHTML = html;
   } catch (error) {
-    console.error("Błąd podczas pobierania posiedzeń:", error);
-  }
-}
-
-// Wypełnienie listy posiedzeń w menu
-function populateSessions(sessions) {
-  const sessionSelect = document.getElementById("sessions");
-  sessionSelect.innerHTML = '<option value="">Wybierz posiedzenie</option>';
-  
-  sessions.forEach(session => {
-    const option = document.createElement("option");
-    option.value = session.number;
-    option.textContent = `Posiedzenie nr ${session.number} (${session.startDate})`;
-    sessionSelect.appendChild(option);
-  });
-}
-
-// Pobieranie głosowań dla danego posiedzenia
-async function getVotes(sessionNumber) {
-  try {
-    const response = await fetch(`${apiBase}/sittings/${sessionNumber}/votes`);
-    if (!response.ok) throw new Error("Błąd podczas pobierania głosowań.");
-    
-    const votes = await response.json();
-    populateVotes(votes);
-  } catch (error) {
-    console.error("Błąd podczas pobierania głosowań:", error);
-  }
-}
-
-// Wypełnienie listy głosowań
-function populateVotes(votes) {
-  const votesList = document.getElementById("votes");
-  votesList.innerHTML = "";
-
-  if (votes.length === 0) {
-    votesList.innerHTML = "<li>Brak głosowań dla tego posiedzenia.</li>";
-    return;
-  }
-
-  votes.forEach(vote => {
-    const li = document.createElement("li");
-    li.textContent = `Głosowanie nr ${vote.number} (${vote.title})`;
-    li.addEventListener("click", () => getVoteDetails(vote.number));
-    votesList.appendChild(li);
-  });
-}
-
-// Pobieranie szczegółów głosowania
-async function getVoteDetails(voteNumber) {
-  try {
-    const response = await fetch(`${apiBase}/votes/${voteNumber}`);
-    if (!response.ok) throw new Error("Błąd podczas pobierania szczegółów głosowania.");
-    
-    const voteDetails = await response.json();
-    displayVoteDetails(voteDetails);
-  } catch (error) {
-    console.error("Błąd podczas pobierania szczegółów głosowania:", error);
-  }
-}
-
-// Wyświetlanie szczegółów głosowania
-function displayVoteDetails(voteDetails) {
-  const voteDetailsDiv = document.getElementById("vote-details");
-  voteDetailsDiv.innerHTML = `
-    <h3>Szczegóły głosowania nr ${voteDetails.number}</h3>
-    <p><strong>Tytuł:</strong> ${voteDetails.title}</p>
-    <p><strong>Data:</strong> ${voteDetails.date}</p>
-    <h4>Wyniki:</h4>
-    <ul>
-      ${voteDetails.results.map(result => `<li>${result.name}: ${result.vote}</li>`).join("")}
-    </ul>
-  `;
-}
-
-document.getElementById("sessions").addEventListener("change", event => {
-  const sessionNumber = event.target.value;
-  if (sessionNumber) {
-    getVotes(sessionNumber);
-  } else {
-    document.getElementById("votes").innerHTML = "";
+    contentDiv.innerHTML = "<p>Błąd podczas ładowania danych.</p>";
   }
 });
 
-getSessions();
+document.getElementById("showProceedings").addEventListener("click", async () => {
+  contentDiv.innerHTML = "<p>Ładowanie listy posiedzeń...</p>";
+  try {
+    const response = await fetch("https://api.sejm.gov.pl/sejm/term10/proceedings");
+    const proceedings = await response.json();
+
+    let html = "<h2>Posiedzenia</h2>";
+    proceedings.forEach(proceeding => {
+      html += `<div class="card">
+                  <p>${proceeding.title}</p>
+               </div>`;
+    });
+
+    contentDiv.innerHTML = html;
+  } catch (error) {
+    contentDiv.innerHTML = "<p>Błąd podczas ładowania danych.</p>";
+  }
+});
