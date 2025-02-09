@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             poslowie.forEach(posel => {
                 const li = document.createElement("li");
+                li.classList.add("posel-item"); // Dodajemy klasę dla stylów
                 li.innerHTML = `
                     <img src="https://api.sejm.gov.pl/sejm/term10/MP/${posel.id}/photo" 
                          alt="${posel.firstLastName}" class="posel-img">
@@ -37,22 +38,27 @@ document.addEventListener("DOMContentLoaded", async () => {
                             <h3>${posel.firstLastName}</h3>
                             <img src="https://api.sejm.gov.pl/sejm/term10/MP/${posel.id}/photo" 
                                  alt="Zdjęcie posła" class="szczegoly-img">
-                            <p><strong>Id:</strong> ${posel.id}</p>
+                            <h4>Informacje podstawowe:</h4>
                             <p><strong>Imię:</strong> ${posel.firstName}</p>
                             <p><strong>Drugie imię:</strong> ${posel.secondName || "Brak informacji"}</p>
                             <p><strong>Nazwisko:</strong> ${posel.lastName}</p>
-                            <p><strong>Odmiana (dopełniacz):</strong> ${posel.genitiveName}</p>
-                            <p><strong>Odmiana (biernik):</strong> ${posel.accusativeName}</p>
-                            <p><strong>Aktywny:</strong> ${posel.active ? "Tak" : "Nie"}</p>
+                            <p><strong>Data urodzenia:</strong> ${posel.birthDate || "Brak danych"} (${posel.birthLocation || "Brak informacji"})</p>
+
+                            <h4>Dane polityczne:</h4>
                             <p><strong>Partia:</strong> ${posel.club || "Brak informacji"}</p>
                             <p><strong>Okręg wyborczy:</strong> ${posel.districtName} (nr ${posel.districtNum})</p>
-                            <p><strong>Województwo:</strong> ${posel.voivodeship}</p>
+                            <p><strong>Numer legitymacji poselskiej:</strong> ${posel.id}</p>
+                            <p><strong>Status:</strong> ${posel.active ? "Poseł z ważnym mandatem" : "Mandat wygasł"}</p>
+
+                            <h4>Dane kontaktowe:</h4>
                             <p><strong>Email:</strong> <a href="mailto:${posel.email}">${posel.email || "Brak adresu"}</a></p>
+
+                            <h4>Wykształcenie i kariera:</h4>
                             <p><strong>Wykształcenie:</strong> ${posel.educationLevel || "Brak informacji"}</p>
                             <p><strong>Zawód:</strong> ${posel.profession || "Brak informacji"}</p>
+
+                            <h4>Wyniki wyborcze:</h4>
                             <p><strong>Liczba głosów:</strong> ${posel.numberOfVotes || "Brak danych"}</p>
-                            <p><strong>Data urodzenia:</strong> ${posel.birthDate || "Brak danych"}</p>
-                            <p><strong>Miejsce urodzenia:</strong> ${posel.birthLocation || "Brak informacji"}</p>
                         `;
                         detailsDiv.style.display = "block";
                     } else {
