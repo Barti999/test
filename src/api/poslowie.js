@@ -2,7 +2,8 @@ const fs = require("fs");
 const fetch = require("node-fetch");
 
 const API_URL = "https://api.sejm.gov.pl/sejm/term10/MP";
-const DATA_PATH = "data/poslowie.json";
+const DATA_FOLDER = "data";
+const DATA_PATH = `${DATA_FOLDER}/poslowie.json`;
 
 async function fetchPoslowie() {
     try {
@@ -39,13 +40,15 @@ async function fetchPoslowie() {
             zdjecie: `https://api.sejm.gov.pl/sejm/term10/MP/${posel.id}/photo`
         }));
 
-        // Sprawdź dane przed zapisaniem
-        console.log("✅ Dane posłów (przed zapisem):", formattedData);
+        // Tworzenie folderu "data" jeśli nie istnieje
+        if (!fs.existsSync(DATA_FOLDER)) {
+            fs.mkdirSync(DATA_FOLDER);
+        }
 
         // Konwersja do JSON i zapis do pliku
         const jsonData = JSON.stringify(formattedData, null, 2);
-
         fs.writeFileSync(DATA_PATH, jsonData, "utf-8");
+
         console.log("✅ Dane posłów zapisane do:", DATA_PATH);
     } catch (error) {
         console.error("❌ Błąd podczas pobierania danych posłów:", error.message);

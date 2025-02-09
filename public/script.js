@@ -1,40 +1,9 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const listaPoslow = document.getElementById("poslowie");
-
-    async function pobierzPoslow() {
-        try {
-            const response = await fetch("https://api.sejm.gov.pl/some-endpoint"); // Zamień na poprawny URL API Sejmu
-            const data = await response.json();
-
-            listaPoslow.innerHTML = "";
-            data.forEach(posel => {
-                const li = document.createElement("li");
-                li.textContent = `${posel.imie} ${posel.nazwisko}`;
-                li.addEventListener("click", () => pokazSzczegoly(posel));
-                listaPoslow.appendChild(li);
-            });
-        } catch (error) {
-            console.error("Błąd pobierania danych", error);
-        }
-    }
-
-    function pokazSzczegoly(posel) {
-        const szczegoly = document.getElementById("informacje-posel");
-        szczegoly.innerHTML = `
-            <h3>${posel.imie} ${posel.nazwisko}</h3>
-            <p>Partia: ${posel.partia}</p>
-            <p>Okręg: ${posel.okreg}</p>
-        `;
-    }
-
-    pobierzPoslow();
-});
 document.addEventListener("DOMContentLoaded", async () => {
     const listaPoslow = document.getElementById("poslowie");
 
     async function loadPoslowie() {
         try {
-            const response = await fetch("../data/poslowie.json"); // Lokalny plik JSON
+            const response = await fetch("data/poslowie.json"); // Pobieranie lokalnego pliku JSON
             if (!response.ok) throw new Error("Nie udało się pobrać danych");
 
             const poslowie = await response.json();
