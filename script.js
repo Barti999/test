@@ -5,19 +5,20 @@ let mpsData = {};
 // Inicjalizacja
 document.addEventListener('DOMContentLoaded', async () => {
     await loadCurrentTerm();
-    await loadProceedings();
-    await loadMPs();
+    if (currentTerm) {
+        await loadProceedings();
+        await loadMPs();
+    }
 });
 
 // Pobierz aktualną kadencję
 async function loadCurrentTerm() {
     try {
-        const response = await fetch(`${API_BASE}/terms`);
+        const response = await fetch(`${API_BASE}/term`);
         if (!response.ok) throw new Error('Nie udało się pobrać danych o kadencji.');
         const terms = await response.json();
         if (!terms.length) throw new Error('Brak dostępnych kadencji.');
-        currentTerm = terms.find(t => t.current)?.num;
-        if (!currentTerm) throw new Error('Nie znaleziono aktualnej kadencji.');
+        currentTerm = terms[terms.length - 1].number; // Ostatnia kadencja
     } catch (error) {
         showError('Błąd pobierania kadencji: ' + error.message);
     }
@@ -42,7 +43,7 @@ async function loadProceedings() {
 async function loadMPs() {
     showLoading(true);
     try {
-        if (Object.keys(mpsData).length) return; // Optymalizacja: jeśli już załadowano, pomijamy
+        if (Object.keys(mpsData).length) return;
         const response = await fetch(`${API_BASE}/term/${currentTerm}/MP`);
         if (!response.ok) throw new Error('Nie udało się pobrać listy posłów.');
         const mps = await response.json();
@@ -150,5 +151,5 @@ function showError(message) {
     const errorContainer = document.getElementById('error-message');
     errorContainer.textContent = message;
     errorContainer.classList.remove('hidden');
-    setTimeout(() => errorContainer.classList.add('hidden'), 5000); // Ukrycie po 5 sekundach
+    setTimeout(() => errorContainer.classList.add('hidden'), 5000);
 }
