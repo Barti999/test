@@ -4,7 +4,15 @@ document.getElementById("showMPs").addEventListener("click", async () => {
   contentDiv.innerHTML = "<p>Ładowanie listy posłów...</p>";
   try {
     const response = await fetch("https://api.sejm.gov.pl/sejm/term10/MP");
+    
+    // Logujemy odpowiedź, żeby sprawdzić, co otrzymujemy
     const mps = await response.json();
+    console.log("Dane posłów: ", mps);
+
+    if (!Array.isArray(mps)) {
+      contentDiv.innerHTML = "<p>Nieprawidłowa struktura danych posłów.</p>";
+      return;
+    }
 
     const activeTrue = mps.filter(mp => mp.active);
     const activeFalse = mps.filter(mp => !mp.active);
@@ -25,7 +33,7 @@ document.getElementById("showMPs").addEventListener("click", async () => {
         const formatNumber = (num) => num.toLocaleString('pl-PL');
 
         html += `<div class="card">
-          <img class="mp-photo" src="https://api.sejm.gov.pl/sejm/term10/MP/${mp.id}/photo-mini" alt="Zdjęcie posła">
+          <img class="mp-photo" src="https://api.sejm.gov.pl/sejm/term10/MP/${mp.id}/photo" alt="Zdjęcie posła">
           <div class="card-content">
             <div><span>Imię i nazwisko:</span> ${mp.firstLastName}</div>
             <div><span>Klub:</span> ${mp.club}</div>
@@ -44,7 +52,7 @@ document.getElementById("showMPs").addEventListener("click", async () => {
     html += "<h3>Nieaktywni</h3>";
     activeFalse.forEach(mp => {
       html += `<div class="card">
-        <img src="https://api.sejm.gov.pl/sejm/term10/MP/${mp.id}/photo-mini" alt="Zdjęcie posła ${mp.firstLastName}" class="mp-photo">
+        <img src="https://api.sejm.gov.pl/sejm/term10/MP/${mp.id}/photo" alt="Zdjęcie posła ${mp.firstLastName}" class="mp-photo">
         <div class="card-content">
           <p><strong>Imię i nazwisko:</strong> ${mp.firstLastName}</p>
           <p><strong>Klub:</strong> ${mp.club}</p>
@@ -62,6 +70,7 @@ document.getElementById("showMPs").addEventListener("click", async () => {
     html += "</section>";
     contentDiv.innerHTML = html;
   } catch (error) {
+    console.error("Błąd podczas ładowania danych posłów:", error);
     contentDiv.innerHTML = "<p>Błąd podczas ładowania danych.</p>";
   }
 });
