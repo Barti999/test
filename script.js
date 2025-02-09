@@ -28,6 +28,7 @@ async function fetchMPs(term) {
     handleError(response);
     const MPs = await response.json();
     console.log(`Fetched MPs for term ${term}:`, MPs);
+    renderMPs(MPs); // Renderowanie posłów w tabeli
     return MPs;
 }
 
@@ -74,6 +75,41 @@ async function fetchVideos(term, offset = 0, limit = 50) {
     const videos = await response.json();
     console.log('Fetched videos:', videos);
     return videos;
+}
+
+// Funkcja do renderowania posłów w tabeli
+function renderMPs(mps) {
+    const tableBody = document.getElementById('mp-table-body');
+    tableBody.innerHTML = ''; // Czyścimy tabelę przed dodaniem nowych danych
+
+    mps.forEach(mp => {
+        const row = document.createElement('tr');
+
+        const nameCell = document.createElement('td');
+        nameCell.textContent = `${mp.firstName} ${mp.lastName}`;
+        row.appendChild(nameCell);
+
+        const clubCell = document.createElement('td');
+        clubCell.textContent = mp.club;
+        row.appendChild(clubCell);
+
+        const voteCell = document.createElement('td');
+        voteCell.textContent = mp.vote || 'Brak danych'; // Dodajemy domyślny tekst
+        row.appendChild(voteCell);
+
+        // Dodanie klasy w zależności od głosu
+        if (mp.vote === 'YES') {
+            voteCell.classList.add('vote-yes');
+        } else if (mp.vote === 'NO') {
+            voteCell.classList.add('vote-no');
+        } else if (mp.vote === 'ABSTAIN') {
+            voteCell.classList.add('vote-abstain');
+        } else {
+            voteCell.classList.add('vote-absent');
+        }
+
+        tableBody.appendChild(row);
+    });
 }
 
 // Funkcja do ustawienia kadencji i pobrania danych
