@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         filteredMPs.forEach(mp => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td><img src="${API_BASE}/MP/${mp.id}/photo-mini" alt="Zdjęcie posła"></td>
+                <td><img src="${API_BASE}/MP/${mp.id}/photo" alt="Zdjęcie posła"></td>
                 <td>${mp.firstName} ${mp.secondName || ""} ${mp.lastName}</td>
                 <td>${mp.club || "Brak przynależności"}</td>
                 <td>${mp.districtName || "Brak danych"}</td>

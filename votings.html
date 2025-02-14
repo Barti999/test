@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Głosowania</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/style.css"> <!-- Poprawiona ścieżka -->
     <script defer src="js/fetchData.js"></script>
     <script defer src="js/renderVotings.js"></script>
 </head>
@@ -21,18 +21,7 @@
     </header>
     <main>
         <h2>Lista głosowań</h2>
-        <table id="voting-table">
-            <thead>
-                <tr>
-                    <th>Data</th>
-                    <th>Tytuł</th>
-                    <th>Za</th>
-                    <th>Przeciw</th>
-                    <th>Wstrzymało się</th>
-                </tr>
-            </thead>
-            <tbody id="voting-table-body"></tbody>
-        </table>
+        <div id="voting-container"></div> <!-- Ten element był brakujący -->
     </main>
 </body>
 </html>
