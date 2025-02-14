@@ -54,3 +54,31 @@ nav {
 .tab-button:hover {
     background: #003d82;
 }
+.mp-card {
+    display: inline-block;
+    width: 200px;
+    margin: 10px;
+    padding: 10px;
+    background: white;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.mp-card img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.page-button {
+    padding: 5px 10px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.page-button.active {
+    background: #0056b3;
+    color: white;
+}

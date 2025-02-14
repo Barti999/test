@@ -1,5 +1,10 @@
 const baseURL = "https://api.sejm.gov.pl/sejm/term10/MP";
-const mpListElement = document.getElementById("mp-list");
+const mpContainer = document.getElementById("mp-container");
+const pagination = document.getElementById("pagination");
+
+let allMPs = [];
+let currentPage = 1;
+const itemsPerPage = 20;
 
 async function fetchMPs() {
     try {
@@ -14,33 +19,58 @@ async function fetchMPs() {
     }
 }
 
-async function fetchMPDetails(mpId) {
-    try {
-        console.log(`🔄 Pobieranie danych posła ID ${mpId}...`);
-        const response = await fetch(`${baseURL}/${mpId}`);
-        if (!response.ok) throw new Error(`Błąd pobierania ID ${mpId}: ${response.status}`);
-        
-        return await response.json();
-    } catch (error) {
-        console.error(`❌ Błąd pobierania posła ID ${mpId}:`, error);
-        return null;
+function renderMPs(page) {
+    mpContainer.innerHTML = "";
+    pagination.innerHTML = "";
+
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedMPs = allMPs.slice(startIndex, endIndex);
+
+    paginatedMPs.forEach(mp => {
+        const mpElement = document.createElement("div");
+        mpElement.classList.add("mp-card");
+
+        const img = document.createElement("img");
+        img.src = `${baseURL}/${mp.id}/photo-mini`;
+        img.alt = `${mp.firstName} ${mp.lastName}`;
+
+        const name = document.createElement("h3");
+        name.textContent = `${mp.firstName} ${mp.lastName}`;
+
+        const club = document.createElement("p");
+        club.textContent = `Klub: ${mp.club || "Brak danych"}`;
+
+        mpElement.appendChild(img);
+        mpElement.appendChild(name);
+        mpElement.appendChild(club);
+
+        mpElement.addEventListener("click", () => {
+            window.location.href = `mp.html?id=${mp.id}`;
+        });
+
+        mpContainer.appendChild(mpElement);
+    });
+
+    // Paginacja
+    const totalPages = Math.ceil(allMPs.length / itemsPerPage);
+    for (let i = 1; i <= totalPages; i++) {
+        const button = document.createElement("button");
+        button.textContent = i;
+        button.classList.add("page-button");
+        if (i === page) button.classList.add("active");
+
+        button.addEventListener("click", () => {
+            currentPage = i;
+            renderMPs(currentPage);
+        });
+
+        pagination.appendChild(button);
     }
 }
 
 async function fetchAllMPDetails() {
-    const MPs = await fetchMPs();
-    if (!MPs.length) return;
-
-    const detailsPromises = MPs.map(mp => fetchMPDetails(mp.id));
-    const detailsList = await Promise.all(detailsPromises);
-
-    detailsList.forEach(details => {
-        if (details) {
-            const li = document.createElement("li");
-            li.textContent = `${details.name} ${details.lastName} (ID: ${details.id})`;
-            mpListElement.appendChild(li);
-        }
-    });
-
-    console.log("✅ Lista posłów załadowana!");
+    allMPs = await fetchMPs();
+    if (!allMPs.length) return;
+    renderMPs(currentPage);
 }
