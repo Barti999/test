@@ -11,7 +11,7 @@ async function fetchMPDetails() {
         const data = await response.json();
 
         detailsContainer.innerHTML = `
-            <img src="https://api.sejm.gov.pl/sejm/term10/MP/${data.id}/photo-mini" alt="${data.firstLastName}">
+            <img src="https://api.sejm.gov.pl/sejm/term10/MP/${data.id}/photo" alt="${data.firstLastName}">
             <h2>${data.firstLastName}</h2>
             <p><strong>Data urodzenia:</strong> ${data.birthDate}</p>
             <p><strong>Miejsce urodzenia:</strong> ${data.birthLocation}</p>

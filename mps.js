@@ -32,7 +32,7 @@ function renderMPs(page) {
         mpElement.classList.add("mp-card");
 
         const img = document.createElement("img");
-        img.src = `${baseURL}/${mp.id}/photo-mini`;
+        img.src = `${baseURL}/${mp.id}/photo`;
         img.alt = `${mp.firstName} ${mp.lastName}`;
 
         const name = document.createElement("h3");
