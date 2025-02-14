@@ -1,53 +1,57 @@
-async function fetchSejmProceedings() {
+document.addEventListener("DOMContentLoaded", async function () {
     const baseUrl = "https://api.sejm.gov.pl/sejm/term10/proceedings";
     const votingBaseUrl = "https://api.sejm.gov.pl/sejm/term10/votings";
+    const proceedingsContainer = document.getElementById("proceedings");
 
-    try {
-        // Pobranie listy posiedzeń sejmu
-        const response = await fetch(baseUrl);
-        if (!response.ok) throw new Error(`Błąd pobierania danych: ${response.status}`);
-        
-        const proceedings = await response.json();
+    async function fetchSejmProceedings() {
+        try {
+            console.log("🔄 Pobieranie posiedzeń Sejmu...");
+            const response = await fetch(baseUrl);
+            if (!response.ok) throw new Error(`Błąd pobierania: ${response.status}`);
+            
+            const proceedings = await response.json();
+            let output = "";
 
-        for (const session of proceedings) {
-            const number = session.number;
-            
-            // Pomijamy jeśli number == 0
-            if (number === 0) continue;
-            
-            const detailsUrl = `${baseUrl}/${number}`;
-            const detailsResponse = await fetch(detailsUrl);
-            if (!detailsResponse.ok) throw new Error(`Błąd pobierania szczegółów: ${detailsResponse.status}`);
-            
-            const details = await detailsResponse.json();
+            for (const session of proceedings) {
+                if (session.number === 0) continue; // Pominięcie błędnych danych
 
-            // Pobranie głosowań dla danego posiedzenia
-            const votingUrl = `${votingBaseUrl}/${number}`;
-            const votingResponse = await fetch(votingUrl);
-            
-            let maxVotingNumber = 0;
-            if (votingResponse.ok) {
-                const votings = await votingResponse.json();
+                const detailsUrl = `${baseUrl}/${session.number}`;
+                const detailsResponse = await fetch(detailsUrl);
+                if (!detailsResponse.ok) throw new Error(`Błąd pobierania szczegółów: ${detailsResponse.status}`);
                 
-                // Znalezienie maksymalnej wartości "votingNumber"
-                if (votings.length > 0) {
-                    maxVotingNumber = Math.max(...votings.map(voting => voting.votingNumber));
+                const details = await detailsResponse.json();
+
+                // Pobranie liczby głosowań
+                const votingUrl = `${votingBaseUrl}/${session.number}`;
+                const votingResponse = await fetch(votingUrl);
+                
+                let maxVotingNumber = 0;
+                if (votingResponse.ok) {
+                    const votings = await votingResponse.json();
+                    if (votings.length > 0) {
+                        maxVotingNumber = Math.max(...votings.map(voting => voting.votingNumber));
+                    }
+                } else {
+                    console.warn(`⚠️ Brak głosowań dla posiedzenia ${session.number}`);
                 }
-            } else {
-                console.warn(`Brak głosowań dla posiedzenia ${number}`);
+
+                // Wyświetlenie na stronie
+                output += `
+                    <div class="session">
+                        <h3>Posiedzenie ${session.number}</h3>
+                        <p><strong>Tytuł:</strong> ${details.title}</p>
+                        <p><strong>Liczba głosowań:</strong> ${maxVotingNumber}</p>
+                    </div>
+                `;
             }
 
-            // Wyświetlenie danych w sposób uporządkowany
-            console.log("----------------------------------------");
-            console.log(`Tytuł: ${details.title}`);
-            console.log(`Liczba głosowań: ${maxVotingNumber}`);
-            console.log("----------------------------------------");
+            proceedingsContainer.innerHTML = output;
+            console.log("✅ Wszystkie posiedzenia zostały pobrane!");
+
+        } catch (error) {
+            console.error("❌ Wystąpił błąd:", error);
         }
-
-    } catch (error) {
-        console.error("Wystąpił błąd:", error);
     }
-}
 
-// Wywołanie funkcji
-fetchSejmProceedings();
+    fetchSejmProceedings();
+});
