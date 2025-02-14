@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const votingContainer = document.getElementById("voting-container");
 
+    /**
+     * Renderuje listę posiedzeń Sejmu.
+     */
     async function renderProceedings() {
         const proceedings = await fetchProceedings();
         if (proceedings.length === 0) {
@@ -9,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         proceedings.forEach(proceeding => {
-            if (!proceeding.id) return; // Zapobiega dodaniu undefined
+            if (!proceeding.id) return; // Zapobiega błędom z undefined
 
             const proceedingElement = document.createElement("div");
             proceedingElement.classList.add("proceeding");
@@ -25,7 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.querySelectorAll(".proceeding-title").forEach(title => {
             title.addEventListener("click", async (e) => {
                 const proceedingId = e.target.dataset.id;
-                if (!proceedingId) return; // Zapobiega błędom
+                if (!proceedingId) return;
 
                 const detailsContainer = document.getElementById(`proceeding-${proceedingId}`);
 
@@ -39,6 +42,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
+    /**
+     * Renderuje głosowania dla danego posiedzenia.
+     */
     async function renderVotingsForProceeding(proceedingId, container) {
         const votings = await fetchVotings(proceedingId);
         if (!votings || votings.length === 0) {
@@ -84,13 +90,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
+    /**
+     * Renderuje listę głosowań dla danego dnia.
+     */
     function renderVotingsList(votings, container) {
         container.innerHTML = "<ul>";
 
         votings.forEach(vote => {
             container.innerHTML += `
                 <li>
-                    ${vote.number}. ${vote.time} - ${vote.title}
+                    ${vote.number}. ${vote.time || "Nieznana godzina"} - ${vote.title}
                 </li>
             `;
         });
