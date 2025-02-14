@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (!response.ok) throw new Error(`Błąd pobierania: ${response.status}`);
             
             const MPs = await response.json();
-            console.log("✅ Lista posłów:", MPs);
             return MPs;
         } catch (error) {
             console.error("❌ Błąd pobierania listy posłów:", error);
@@ -23,9 +22,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             const response = await fetch(`${baseURL}/${mpId}`);
             if (!response.ok) throw new Error(`Błąd pobierania ID ${mpId}: ${response.status}`);
             
-            const details = await response.json();
-            console.log(`✅ Dane posła ID ${mpId}:`, details);
-            return details;
+            return await response.json();
         } catch (error) {
             console.error(`❌ Błąd pobierania posła ID ${mpId}:`, error);
             return null;
@@ -36,11 +33,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         const MPs = await fetchMPs();
         if (!MPs.length) return;
 
-        // Pobieranie szczegółowych danych posłów równocześnie
         const detailsPromises = MPs.map(mp => fetchMPDetails(mp.id));
         const detailsList = await Promise.all(detailsPromises);
 
-        // Wyświetlanie posłów na stronie
         detailsList.forEach(details => {
             if (details) {
                 const li = document.createElement("li");
@@ -49,7 +44,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
         });
 
-        console.log("✅ Wszystkie dane posłów zostały pobrane!");
+        console.log("✅ Lista posłów załadowana!");
     }
 
     fetchAllMPDetails();

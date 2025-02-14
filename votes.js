@@ -21,7 +21,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 
                 const details = await detailsResponse.json();
 
-                // Pobranie liczby głosowań
                 const votingUrl = `${votingBaseUrl}/${session.number}`;
                 const votingResponse = await fetch(votingUrl);
                 
@@ -35,7 +34,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                     console.warn(`⚠️ Brak głosowań dla posiedzenia ${session.number}`);
                 }
 
-                // Wyświetlenie na stronie
                 output += `
                     <div class="session">
                         <h3>Posiedzenie ${session.number}</h3>
@@ -46,7 +44,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
 
             proceedingsContainer.innerHTML = output;
-            console.log("✅ Wszystkie posiedzenia zostały pobrane!");
+            console.log("✅ Posiedzenia załadowane!");
 
         } catch (error) {
             console.error("❌ Wystąpił błąd:", error);

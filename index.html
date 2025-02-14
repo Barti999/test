@@ -3,19 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sejm - Dane</title>
+    <title>Sejm - Strona Główna</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Sejm - Dane</h1>
 
-    <h2>Lista Posłów</h2>
-    <ul id="mp-list"></ul>
+    <h1>Sejm - Strona Główna</h1>
 
-    <h2>Posiedzenia Sejmu</h2>
-    <div id="proceedings"></div>
+    <!-- Nawigacja -->
+    <nav>
+        <button class="tab-button" onclick="showTab('mps-tab')">Posłowie</button>
+        <button class="tab-button" onclick="showTab('votes-tab')">Głosowania</button>
+    </nav>
 
+    <!-- Zakładka Posłowie -->
+    <div id="mps-tab" class="tab-content">
+        <h2>Lista Posłów</h2>
+        <ul id="mp-list"></ul>
+    </div>
+
+    <!-- Zakładka Głosowania -->
+    <div id="votes-tab" class="tab-content" style="display: none;">
+        <h2>Posiedzenia Sejmu i Głosowania</h2>
+        <div id="proceedings"></div>
+    </div>
+
+    <script src="tabs.js"></script>
     <script src="mps.js"></script>
     <script src="votes.js"></script>
+
 </body>
 </html>
