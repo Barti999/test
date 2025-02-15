@@ -35,7 +35,7 @@ async function fetchSejmProceedings() {
 
             output += `
                 <div class="session">
-                    <h3>Posiedzenie ${session.number}</h3>
+                    <h3><a href="votings.html?number=${session.number}" class="session-link">Posiedzenie ${session.number}</a></h3>
                     <p><strong>Tytuł:</strong> ${details.title}</p>
                     <p><strong>Liczba głosowań:</strong> ${maxVotingNumber}</p>
                 </div>
